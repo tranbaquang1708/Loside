@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Common">
+      <UniqueIdentifier>f6dddded-f9aa-444e-a19a-930b0b4ef5a9</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets">
+      <UniqueIdentifier>4668cf85-fd03-4eb9-b5fa-34bf7d35be25</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dds;dlg;fbx;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tga;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Assets\Backgrounds">
+      <UniqueIdentifier>{7fbbd26b-0822-4369-b432-5fc237ee4e49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\Backgrounds\Animations">
+      <UniqueIdentifier>{83ed8bfa-4bc5-4516-9d9e-85d587d0cf83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\Backgrounds\Animations\BackgroundText">
+      <UniqueIdentifier>{d2c4d431-bbe6-4bc2-9c2f-04cf42cde051}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Texture2D">
+      <UniqueIdentifier>{117bb678-62b1-46b2-a135-0b454c76878d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="StepTimer.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="DeviceResources.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dx12.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation2D.h">
+      <Filter>Common\Texture2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture2D.h">
+      <Filter>Common\Texture2D</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="DeviceResources.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="directx.ico">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="..\Assets\Backgrounds\white.dds">
+      <Filter>Assets\Backgrounds</Filter>
+    </Image>
+    <Image Include="..\Assets\Backgrounds\Animations\BackgroundText\0.dds">
+      <Filter>Assets\Backgrounds\Animations\BackgroundText</Filter>
+    </Image>
+    <Image Include="..\Assets\Backgrounds\Animations\BackgroundText\1.dds">
+      <Filter>Assets\Backgrounds\Animations\BackgroundText</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="settings.manifest">
+      <Filter>Assets</Filter>
+    </Manifest>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>
