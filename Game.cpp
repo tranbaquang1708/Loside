@@ -100,17 +100,9 @@ void Game::Render()
 
     m_spriteBatch->Begin(commandList);
 
-    /*m_spriteBatch->Draw(m_resourceDescriptors->GetGpuHandle(Descriptors::Background),
-        GetTextureSize(m_background.Get()),
-        m_fullscreenRect);*/
-
     m_background.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
-
-    /*m_spriteBatch->Draw(m_resourceDescriptors->GetGpuHandle(Descriptors::BackgroundText),
-        GetTextureSize(m_backgroundText[1].Get()),
-        m_fullscreenRect, nullptr, Colors::White, 0.f);*/
-
     m_backgroundText.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
+    m_protag.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
 
     m_spriteBatch->End();
 
@@ -242,38 +234,17 @@ void Game::CreateDeviceDependentResources()
      SpriteBatchPipelineStateDescription pd(rtState);
      m_spriteBatch = std::make_unique<SpriteBatch>(device, resourceUpload, pd);
 
-     /*DX::ThrowIfFailed(
-         CreateDDSTextureFromFile(device, resourceUpload, L"../Assets/Backgrounds/white.dds",
-             m_background.ReleaseAndGetAddressOf()));
-
-     CreateShaderResourceView(device, m_background.Get(),
-         m_resourceDescriptors->GetCpuHandle(Descriptors::Background));*/
-
      m_background.loadTexture(L"../Assets/Backgrounds/white.dds", device, resourceUpload, m_resourceDescriptors,
          m_descriptorStatuses);
 
 
      //BackgroundText animation
-     const wchar_t backgroundTextDirPath[] = L"../Assets/Backgrounds/Animations/BackgroundText";
-     /*int numOfFrames = 0;
+     m_backgroundText.loadAnimation(L"../Assets/Backgrounds/Animations/BackgroundText", device, resourceUpload,
+         m_resourceDescriptors, m_descriptorStatuses, 0.7, true);
 
-     for (const auto& entry : std::filesystem::directory_iterator(backgroundTextDirPath)) {
-         numOfFrames++;
-     }
-
-     m_backgroundText.resize(numOfFrames);
-
-     for (const auto& entry : std::filesystem::directory_iterator(backgroundTextDirPath)) {
-         DX::ThrowIfFailed(
-             CreateDDSTextureFromFile(device, resourceUpload, entry.path().c_str(),
-                 m_backgroundText[std::stoi(entry.path().stem())].ReleaseAndGetAddressOf()));
-     }*/
-
-     m_backgroundText.loadAnimation(backgroundTextDirPath, device, resourceUpload, m_resourceDescriptors, m_descriptorStatuses, 
-          0.7, true);
-
-     /*CreateShaderResourceView(device, m_backgroundText.getFirstFrame().Get(),
-         m_resourceDescriptors->GetCpuHandle(Descriptors::BackgroundText));*/
+     // Protagonist
+     m_protag.loadTexture(L"../Assets/Protagonists/protagonist.dds", device, resourceUpload, m_resourceDescriptors,
+         m_descriptorStatuses);
 
 
      auto uploadResourcesFinished = resourceUpload.End(

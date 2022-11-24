@@ -69,9 +69,10 @@ private:
      std::unique_ptr<DirectX::SpriteBatch>      m_spriteBatch;
      RECT                                       m_fullscreenRect;
 
-     // Backgrounds
-     Texture2D                                  m_background;
-     Animation2D                                m_backgroundText;
      int                                        m_descriptorCount;
      std::vector<bool>                          m_descriptorStatuses;
+     
+     Texture2D                                  m_background;
+     Animation2D                                m_backgroundText;
+     Texture2D                                  m_protag;
 };
