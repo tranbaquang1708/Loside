@@ -295,7 +295,7 @@ void Game::CreateWindowSizeDependentResources()
 void Game::OnDeviceLost()
 {
     // TODO: Add Direct3D resource cleanup here.
-    m_background.reset();
+    m_background.reset(m_descriptorStatuses);
     m_resourceDescriptors.reset();
     m_spriteBatch.reset();
     m_backgroundText.reset(m_descriptorStatuses);

@@ -107,6 +107,7 @@ private:
 			}
 		}
 
+		assert(false && "Heap is full");
 		return -1;
 	}
 

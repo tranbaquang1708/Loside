@@ -29,8 +29,9 @@ public:
 			m_fullscreenRect, nullptr, DirectX::Colors::White, 0.f);
 	}
 
-	void reset() {
+	void reset(std::vector<bool>& m_descriptorStatuses) {
 		texture.Reset();
+		m_descriptorStatuses[descriptorMap] = false;
 	}
 
 private:
