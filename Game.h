@@ -8,7 +8,7 @@
 #include "StepTimer.h"
 #include "Animation2D.h"
 #include "Texture2D.h"
-
+#include "Protagonist.h"
 // A basic game implementation that creates a D3D12 device and
 // provides a game loop.
 class Game final : public DX::IDeviceNotify
@@ -63,16 +63,27 @@ private:
     DX::StepTimer                               m_timer;
 
     // If using the DirectX Tool Kit for DX12, uncomment this line:
-     std::unique_ptr<DirectX::GraphicsMemory>   m_graphicsMemory;
+    std::unique_ptr<DirectX::GraphicsMemory>    m_graphicsMemory;
 
+    // TODO: Addiional class members
+    // Controls
+    std::unique_ptr<DirectX::GamePad>           m_gamePad;
+    std::unique_ptr<DirectX::Keyboard>          m_keyboard;
+
+    // Texture
      std::unique_ptr<DirectX::DescriptorHeap>   m_resourceDescriptors;
-     std::unique_ptr<DirectX::SpriteBatch>      m_spriteBatch;
-     RECT                                       m_fullscreenRect;
-
-     int                                        m_descriptorCount;
      std::vector<bool>                          m_descriptorStatuses;
-     
-     Texture2D                                  m_background;
-     Animation2D                                m_backgroundText;
-     Texture2D                                  m_protag;
+     std::unique_ptr<DirectX::SpriteBatch>      m_spriteBatch;
+    
+    //      Background
+    Texture2D                                   m_background;
+    Animation2D                                 m_backgroundText;
+    RECT                                        m_fullscreenRect;
+
+    //      Ground
+    Texture2D                                   m_ground;
+    Texture2D                                   m_groundText;
+
+    //      Protagonist
+    Protagonist                                 m_protagonist;
 };

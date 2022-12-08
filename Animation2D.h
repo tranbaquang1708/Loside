@@ -13,34 +13,18 @@
 // Create 2D animation from multipple images stored in a folder
 class Animation2D {
 public:
-	Animation2D() noexcept :
-		frameTime(1 / 12.),
-		currentFrameIdx(0),
-		playedTime(0),
-		isLoop(false)
-	{}
-
-	Microsoft::WRL::ComPtr<ID3D12Resource> getFirstFrame() {
-#ifdef _DEBUG
-		assert(frames.size() > 0);
-#endif
-		return frames[0];
-	}
-
-	void loadAnimation(const wchar_t* path, ID3D12Device* device, DirectX::ResourceUploadBatch& resourceUpload,
-		std::unique_ptr<DirectX::DescriptorHeap>& m_resourceDescriptors,
-		std::vector<bool>& m_descriptorStatuses,
-		float arg_frameTime = 1/12.,
-		bool arg_isLoop=false) {
+	void loadAnimation(const wchar_t* texturesPath, ID3D12Device* device, DirectX::ResourceUploadBatch& resourceUpload,
+		std::unique_ptr<DirectX::DescriptorHeap>& m_resourceDescriptors, std::vector<bool>& m_descriptorStatuses,
+		float arg_frameTime = 1/12., bool arg_isLoop=false) {
 		int numOfFrames = 0;
 
-		for (const auto& entry : std::filesystem::directory_iterator(path)) {
+		for (const auto& entry : std::filesystem::directory_iterator(texturesPath)) {
 			numOfFrames++;
 		}
 
 		this->frames.resize(numOfFrames);
 
-		for (const auto& entry : std::filesystem::directory_iterator(path)) {
+		for (const auto& entry : std::filesystem::directory_iterator(texturesPath)) {
 			int frameNo = std::stoi(entry.path().stem());
 			DX::ThrowIfFailed(
 				CreateDDSTextureFromFile(device, resourceUpload, entry.path().c_str(),
@@ -55,21 +39,23 @@ public:
 
 		this->isLoop = arg_isLoop;
 		this->frameTime = arg_frameTime;
+		this->currentFrameIdx = 0;
+		this->playedTime = 0;
 #ifdef _DEBUG
 		assert(frames.size() == 2);
 #endif
 	}
 
 	void draw(std::unique_ptr<DirectX::SpriteBatch>& m_spriteBatch,
-		std::unique_ptr<DirectX::DescriptorHeap>& m_resourceDescriptors,
-		RECT& m_fullscreenRect) 
+		std::unique_ptr<DirectX::DescriptorHeap>& m_resourceDescriptors) 
 	{
 		m_spriteBatch->Draw(m_resourceDescriptors->GetGpuHandle(descriptorMap.find(currentFrameIdx)->second),
 			DirectX::GetTextureSize(this->frames[currentFrameIdx].Get()),
-			m_fullscreenRect, nullptr, DirectX::Colors::White, 0.f);
+			destRect, nullptr, DirectX::Colors::White, 0.f);
 	}
 
-	void update(float elapsedTime) {
+	void update(float elapsedTime)
+	{
 		this->playedTime += elapsedTime;
 		if (isLoop) {
 			this->currentFrameIdx = static_cast<int>(this->playedTime / this->frameTime) % this->frames.size();
@@ -82,16 +68,40 @@ public:
 		//OutputDebugStringA(std::to_string(this->currentFrameIdx).c_str());
 	}
 
-	void reset(std::vector<bool>& m_descriptorStatuses) {
-		// TODO: Parallel this
+	void reset(std::vector<bool>& m_descriptorStatuses)
+	{
+		// MYTODO: Parallelize this
 		for (Microsoft::WRL::ComPtr<ID3D12Resource> f : frames) {
 			f.Reset();
 		}
 
-		// TODO: Parallel this
+		// MYTODO: Parallelize this
 		for (std::map<int, int>::iterator it = descriptorMap.begin(); it != descriptorMap.end(); ++it) {
 			m_descriptorStatuses[it->second] = false;
 		}
+	}
+
+	// Set rectangle from top-left, down-right
+	// top coordinate will be scaled automatically from texture size
+	void setRect(LONG left, LONG right, LONG bottom)
+	{
+		//XMUINT2 textureSize = ;
+		destRect.left = left;
+		destRect.right = right;
+		destRect.bottom = bottom;
+		destRect.top = bottom
+			- static_cast<LONG>(
+				(
+					(right - left) / static_cast<float>(DirectX::GetTextureSize(this->frames[0].Get()).x)
+					)
+				* DirectX::GetTextureSize(this->frames[0].Get()).y
+				);
+
+	}
+
+	void setRect(RECT& rect)
+	{
+		destRect = rect;
 	}
 
 private:
@@ -111,10 +121,12 @@ private:
 		return -1;
 	}
 
-	float playedTime;
-	float frameTime;
-	int currentFrameIdx;
+	float												playedTime;
+	float												frameTime;
+	int													currentFrameIdx;
 	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> frames;
-	std::map<int, int> descriptorMap;	// Map frame with descriptors
-	bool isLoop;
+	bool												isLoop;
+	RECT												destRect;		// Assume all frames have the same size
+
+	std::map<int, int>									descriptorMap;	// Map frame with descriptors
 };

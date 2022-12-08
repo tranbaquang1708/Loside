@@ -6,12 +6,12 @@
 
 class Texture2D {
 public:
-	void loadTexture(const wchar_t* path, ID3D12Device* device, DirectX::ResourceUploadBatch& resourceUpload,
+	void loadTexture(const wchar_t* texturePath, ID3D12Device* device, DirectX::ResourceUploadBatch& resourceUpload,
 		std::unique_ptr<DirectX::DescriptorHeap>& m_resourceDescriptors,
 		std::vector<bool>& m_descriptorStatuses) 
 	{
 		DX::ThrowIfFailed(
-			CreateDDSTextureFromFile(device, resourceUpload, path,
+			CreateDDSTextureFromFile(device, resourceUpload, texturePath,
 				this->texture.ReleaseAndGetAddressOf()));
 
 		int descriptorNo = pushToHeap(m_descriptorStatuses);
@@ -21,20 +21,56 @@ public:
 	}
 
 	void draw(std::unique_ptr<DirectX::SpriteBatch>& m_spriteBatch,
-		std::unique_ptr<DirectX::DescriptorHeap>& m_resourceDescriptors,
-		RECT& m_fullscreenRect)
+		std::unique_ptr<DirectX::DescriptorHeap>& m_resourceDescriptors)
 	{
 		m_spriteBatch->Draw(m_resourceDescriptors->GetGpuHandle(descriptorMap),
 			DirectX::GetTextureSize(this->texture.Get()),
-			m_fullscreenRect, nullptr, DirectX::Colors::White, 0.f);
+			destRect, nullptr, DirectX::Colors::White, 0.f);
 	}
 
-	void reset(std::vector<bool>& m_descriptorStatuses) {
+	void reset(std::vector<bool>& m_descriptorStatuses)
+	{
 		texture.Reset();
 		m_descriptorStatuses[descriptorMap] = false;
 	}
 
-private:
+	int getDescriptor()
+	{
+		return descriptorMap;
+	}
+
+	// Set rectangle from top-left, down-right
+	// top coordinate will be scaled automatically from texture size
+	void setRect(LONG left, LONG right, LONG bottom)
+	{
+		//XMUINT2 textureSize = ;
+		destRect.left = left;
+		destRect.right = right;
+		destRect.bottom = bottom;
+		destRect.top = bottom 
+			- static_cast<LONG>(
+				(
+					(right - left) / static_cast<float>(DirectX::GetTextureSize(this->texture.Get()).x)
+				)
+				* DirectX::GetTextureSize(this->texture.Get()).y
+			);
+
+	}
+
+	void setRect(RECT& rect)
+	{
+		destRect = rect;
+	}
+
+	void updatePosition(LONG x, LONG y)
+	{
+		this->destRect.left += x;
+		this->destRect.top += y;
+		this->destRect.right += x;
+		this->destRect.bottom += y;
+	}
+
+protected:
 	int pushToHeap(std::vector<bool>& m_descriptorStatuses,
 		int startIdx = 0)
 	{
@@ -49,6 +85,8 @@ private:
 		return -1;
 	}
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> texture;
-	int descriptorMap;
+private:
+	Microsoft::WRL::ComPtr<ID3D12Resource>	texture;
+	RECT									destRect;
+	int										descriptorMap;
 };

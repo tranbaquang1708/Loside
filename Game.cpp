@@ -43,10 +43,15 @@ void Game::Initialize(HWND window, int width, int height)
 
     // TODO: Change the timer settings if you want something other than the default variable timestep mode.
     // e.g. for 60 FPS fixed timestep update logic, call:
-    /*
-    m_timer.SetFixedTimeStep(true);
-    m_timer.SetTargetElapsedSeconds(1.0 / 60);
-    */
+    
+    /*m_timer.SetFixedTimeStep(true);
+    m_timer.SetTargetElapsedSeconds(1.0 / 120);*/
+
+    // Additional initialization
+
+    // Control
+    m_gamePad = std::make_unique<GamePad>();
+    m_keyboard = std::make_unique<Keyboard>();
 }
 
 #pragma region Frame Update
@@ -69,8 +74,129 @@ void Game::Update(DX::StepTimer const& timer)
     float elapsedTime = float(timer.GetElapsedSeconds());
 
     // TODO: Add your game logic here.
+    // Independent animations
     m_backgroundText.update(elapsedTime);
+    // MYTODO: Set animations based on elapsedTime
+    //auto time = static_cast<float>(timer.GetTotalSeconds());
 
+    // Pad conntrols
+    //auto pad = m_gamePad->GetState(0);
+
+    //if (pad.IsConnected())
+    //{
+    //    if (pad.IsViewPressed())
+    //    {
+    //        ExitGame();
+    //    }
+
+    //    if (pad.IsLeftStickPressed())
+    //    {
+    //        m_yaw = m_pitch = 0.f;
+    //    }
+    //    else
+    //    {
+    //        constexpr float ROTATION_GAIN = 0.1f;
+    //        m_yaw += -pad.thumbSticks.leftX * ROTATION_GAIN;
+    //        m_pitch += pad.thumbSticks.leftY * ROTATION_GAIN;
+    //    }
+    //}
+
+    // Keyboard controls
+    auto kb = m_keyboard->GetState();
+#ifdef _DEBUG
+    if (kb.Escape)
+    {
+        ExitGame();
+    }
+#endif
+
+    // MYTODO: move MOVE_SPEED to config file, movespeed is calculated per sec
+    constexpr LONG MOVE_SPEED = 300; 
+    LONG fpsBasedMoveSpeed = static_cast<LONG>(MOVE_SPEED * elapsedTime);
+    /*Vector3 move = Vector3::Zero;
+
+    if (kb.W)
+        move.y += MOVE_SPEED;
+    if (kb.S)
+        move.y -= MOVE_SPEED;
+    if (kb.A)
+        move.x += MOVE_SPEED;
+    if (kb.D)
+        move.x -= MOVE_SPEED;
+    if (kb.Space)
+        move.z += MOVE_SPEED;
+    if (kb.X)
+        move.z -= MOVE_SPEED;*/
+
+
+    /*if (kb.Up)
+        m_pitch += 1.f * ROTATION_GAIN;
+
+    if (kb.Down)
+        m_pitch -= 1.f * ROTATION_GAIN;*/
+    
+    if (kb.Left)
+        m_protagonist.updatePosition(-fpsBasedMoveSpeed, 0);
+
+    if (kb.Right)
+        m_protagonist.updatePosition(+fpsBasedMoveSpeed, 0);
+
+    // limit pitch to straight up or straight down
+    /*constexpr float limit = XM_PIDIV2 - 0.01f;
+    m_pitch = std::max(-limit, m_pitch);
+    m_pitch = std::min(+limit, m_pitch);*/
+
+    // keep longitude in sane range by wrapping
+    /*if (m_yaw > XM_PI)
+    {
+        m_yaw -= XM_2PI;
+    }
+    else if (m_yaw < -XM_PI)
+    {
+        m_yaw += XM_2PI;
+    }*/
+
+    /*float y = sinf(m_pitch);
+    float r = cosf(m_pitch);
+    float z = r * cosf(m_yaw);
+    float x = r * sinf(m_yaw);*/
+
+    //m_cameraPos += move;
+    //XMVECTOR lookAt = m_cameraPos +  Vector3(x, y, z);
+    //XMVECTOR lookAt = Vector3(x, y, z);
+    //m_view = XMMatrixLookAtRH(m_cameraPos, lookAt, Vector3::Up);
+    //m_view = Matrix::CreateLookAt(
+    //    //Vector3(2.f, 2.f, 2.f), Vector3(1.f, 0.f, 0.f), Vector3::UnitY);
+    //    m_cameraPos, lookAt, Vector3::UnitY);
+
+#ifdef _DEBUG
+    std::wstringstream outSS(L"");
+    /*outSS << L"Camera: ";
+    outSS << m_cameraPos.x << L", ";
+    outSS << m_cameraPos.y << L", ";
+    outSS << m_cameraPos.z << L"\n";*/
+
+    /*outSS << L"Look at: ";
+    outSS << XMVectorGetX(lookAt) << L", ";
+    outSS << XMVectorGetY(lookAt) << L", ";
+    outSS << XMVectorGetZ(lookAt) << L"\n";*/
+
+    /*outSS << L"Fullscreen rect: ";
+    outSS << m_fullscreenRect.top << L", ";
+    outSS << m_fullscreenRect.left << L", ";
+    outSS << m_fullscreenRect.right << L", ";
+    outSS << m_fullscreenRect.bottom << L"\n";*/
+
+    outSS << L"FrameTime: " << elapsedTime << L"(" << 1/elapsedTime << L"FPS)" << L"\n";
+
+    outSS << L"-------------------------------------\n";
+
+    OutputDebugStringW(outSS.str().c_str());
+#endif
+    /*auto time = static_cast<float>(timer.GetTotalSeconds());
+
+    m_world = Matrix::CreateRotationZ(cosf(time) * 2.f);*/
+    // END TODO
     elapsedTime;
 
     PIXEndEvent();
@@ -95,17 +221,28 @@ void Game::Render()
     PIXBeginEvent(commandList, PIX_COLOR_DEFAULT, L"Render");
 
     // TODO: Add your rendering code here.
+    // Texture
     ID3D12DescriptorHeap* heaps[] = { m_resourceDescriptors->Heap() };
     commandList->SetDescriptorHeaps(static_cast<UINT>(std::size(heaps)), heaps);
 
     m_spriteBatch->Begin(commandList);
 
-    m_background.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
-    m_backgroundText.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
-    m_protag.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
+    //    Background
+    m_background.draw(m_spriteBatch, m_resourceDescriptors);
+    m_backgroundText.draw(m_spriteBatch, m_resourceDescriptors);
+
+    //    Ground
+    m_ground.draw(m_spriteBatch, m_resourceDescriptors);
+    m_groundText.draw(m_spriteBatch, m_resourceDescriptors);
+
+    //    Protagonist
+    //    Move hard coded resolution to config file
+    m_protagonist.draw(m_spriteBatch, m_resourceDescriptors);
 
     m_spriteBatch->End();
-
+    
+    
+    // END TODO
     PIXEndEvent(commandList);
 
     // Show the new frame.
@@ -147,16 +284,19 @@ void Game::Clear()
 void Game::OnActivated()
 {
     // TODO: Game is becoming active window.
+    m_gamePad->Resume();
 }
 
 void Game::OnDeactivated()
 {
     // TODO: Game is becoming background window.
+    m_gamePad->Suspend();
 }
 
 void Game::OnSuspending()
 {
     // TODO: Game is being power-suspended (or minimized).
+    m_gamePad->Suspend();
 }
 
 void Game::OnResuming()
@@ -164,6 +304,7 @@ void Game::OnResuming()
     m_timer.ResetElapsedTime();
 
     // TODO: Game is being power-resumed (or returning from minimize).
+    m_gamePad->Resume();
 }
 
 void Game::OnWindowMoved()
@@ -191,8 +332,8 @@ void Game::OnWindowSizeChanged(int width, int height)
 void Game::GetDefaultSize(int& width, int& height) const noexcept
 {
     // TODO: Change to desired default window size (note minimum size is 320x200).
-    width = 1600;
-    height = 900;
+    width = 1280;
+    height = 720;
 }
 #pragma endregion
 
@@ -214,43 +355,49 @@ void Game::CreateDeviceDependentResources()
     }
 
     // If using the DirectX Tool Kit for DX12, uncomment this line:
-     m_graphicsMemory = std::make_unique<GraphicsMemory>(device);
+    m_graphicsMemory = std::make_unique<GraphicsMemory>(device);
 
     // TODO: Initialize device dependent objects here (independent of window size).
-     m_descriptorCount = 20000;
-     m_resourceDescriptors = std::make_unique<DescriptorHeap>(device,
-         m_descriptorCount);
-     for (int i = 0; i < m_descriptorCount; ++i) {
-         m_descriptorStatuses.push_back(false);
-     }
+    // MYTODO: Move hard coded descriptor heap size to config file
+    m_resourceDescriptors = std::make_unique<DescriptorHeap>(device, 20000);
+    m_descriptorStatuses.resize(20000);
 
-     ResourceUploadBatch resourceUpload(device);
+    // MYTODO: Move hard coded resolution to config file
+    Vector2 resolution = Vector2(3840, 2160);
 
-     resourceUpload.Begin();
+    ResourceUploadBatch resourceUpload(device);
 
-     RenderTargetState rtState(m_deviceResources->GetBackBufferFormat(),
-         m_deviceResources->GetDepthBufferFormat());
+    // Upload resources
+    resourceUpload.Begin();
 
-     SpriteBatchPipelineStateDescription pd(rtState);
-     m_spriteBatch = std::make_unique<SpriteBatch>(device, resourceUpload, pd);
+    //    Sprite batch
+    RenderTargetState rtState(m_deviceResources->GetBackBufferFormat(),
+        m_deviceResources->GetDepthBufferFormat());
 
-     m_background.loadTexture(L"../Assets/Backgrounds/white.dds", device, resourceUpload, m_resourceDescriptors,
-         m_descriptorStatuses);
+    SpriteBatchPipelineStateDescription pd(rtState);
+    m_spriteBatch = std::make_unique<SpriteBatch>(device, resourceUpload, pd);
 
+    //    Background
+    m_background.loadTexture(L"../Assets/Backgrounds/white.dds", device, resourceUpload, m_resourceDescriptors,
+        m_descriptorStatuses);
+    m_backgroundText.loadAnimation(L"../Assets/Backgrounds/Animations/BackgroundText", device, resourceUpload,
+        m_resourceDescriptors, m_descriptorStatuses, 1., true);
 
-     //BackgroundText animation
-     m_backgroundText.loadAnimation(L"../Assets/Backgrounds/Animations/BackgroundText", device, resourceUpload,
-         m_resourceDescriptors, m_descriptorStatuses, 0.7, true);
+    //    Ground
+    m_ground.loadTexture(L"../Assets/Grounds/ground.dds", device, resourceUpload, m_resourceDescriptors,
+        m_descriptorStatuses);
+    m_groundText.loadTexture(L"../Assets/Grounds/groundText.dds", device, resourceUpload, m_resourceDescriptors,
+        m_descriptorStatuses);
 
-     // Protagonist
-     m_protag.loadTexture(L"../Assets/Protagonists/protagonist.dds", device, resourceUpload, m_resourceDescriptors,
-         m_descriptorStatuses);
+    //    Protagonist
+    m_protagonist.loadTexture(L"../Assets/Protagonists/protagonist.dds", device, resourceUpload, m_resourceDescriptors,
+        m_descriptorStatuses);
 
+    auto uploadResourcesFinished = resourceUpload.End(
+        m_deviceResources->GetCommandQueue());
 
-     auto uploadResourcesFinished = resourceUpload.End(
-         m_deviceResources->GetCommandQueue());
-
-     uploadResourcesFinished.wait();
+    uploadResourcesFinished.wait();
+    // Upload resources finished
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.
@@ -261,16 +408,42 @@ void Game::CreateWindowSizeDependentResources()
     m_spriteBatch->SetViewport(viewport);
 
     m_fullscreenRect = m_deviceResources->GetOutputSize();
+
+
+
+    // Set texture render rectangle
+    //    Background
+    m_background.setRect(m_fullscreenRect);
+    m_backgroundText.setRect(m_fullscreenRect);
+
+    //    Ground
+    m_ground.setRect(m_fullscreenRect);
+    m_groundText.setRect(m_fullscreenRect);
+
+    //    Protagonist
+    m_protagonist.setRect(static_cast<LONG>(m_fullscreenRect.right * 0.1),
+        static_cast<LONG>(m_fullscreenRect.right * 0.15),
+        static_cast<LONG>(m_fullscreenRect.bottom * 0.85));
 }
 
 void Game::OnDeviceLost()
 {
     // TODO: Add Direct3D resource cleanup here.
-    m_background.reset(m_descriptorStatuses);
-    m_resourceDescriptors.reset();
+    // Sprite batch
     m_spriteBatch.reset();
+    
+    // Background
+    m_background.reset(m_descriptorStatuses);
     m_backgroundText.reset(m_descriptorStatuses);
 
+    // Ground
+    m_ground.reset(m_descriptorStatuses);
+    m_groundText.reset(m_descriptorStatuses);
+
+    // Protagonist
+    m_protagonist.reset(m_descriptorStatuses);
+
+    // END TODO
     // If using the DirectX Tool Kit for DX12, uncomment this line:
      m_graphicsMemory.reset();
 }
