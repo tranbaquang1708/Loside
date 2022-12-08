@@ -210,7 +210,6 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Plane3D.h" />
     <ClInclude Include="ReadData.h" />
-    <ClInclude Include="SkyboxEffect.h" />
     <ClInclude Include="StepTimer.h" />
     <ClInclude Include="DeviceResources.h" />
     <ClInclude Include="Texture2D.h" />
@@ -225,7 +224,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="SkyboxEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -236,8 +234,6 @@
     <Image Include="..\Assets\Backgrounds\white.dds" />
     <Image Include="..\Assets\Protagonists\protagonist.dds" />
     <Image Include="..\Assets\Protagonists\protagonist.png" />
-    <Image Include="..\Assets\Skybox\lobbycube.dds" />
-    <Image Include="..\Assets\Skybox\skybox.dds" />
     <Image Include="directx.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -246,37 +242,6 @@
   <ItemGroup>
     <None Include="..\Assets\Protagonists\protagonist.sdkmesh" />
     <None Include="packages.config" />
-    <None Include="SkyboxEffect_Common.hlsli" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="SkyboxEffect_PS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </HeaderFileOutput>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </HeaderFileOutput>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </HeaderFileOutput>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </HeaderFileOutput>
-    </FxCompile>
-    <FxCompile Include="SkyboxEffect_VS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </HeaderFileOutput>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </HeaderFileOutput>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </HeaderFileOutput>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </HeaderFileOutput>
-    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

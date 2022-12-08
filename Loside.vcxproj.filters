@@ -26,14 +26,8 @@
     <Filter Include="Common\Shape3D">
       <UniqueIdentifier>{12097bef-2b08-40f1-ad38-3ff4bb49e3f0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Common\SkyBox">
-      <UniqueIdentifier>{f06efbe3-e6b1-47bd-a5a1-772b0cb07c5a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Common\Control">
       <UniqueIdentifier>{91e62dc6-f1b3-4d47-b40e-a122d003b903}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Assets\Skyboxes">
-      <UniqueIdentifier>{6ef8dba8-70c2-4225-8bf9-e16343a048d9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -58,9 +52,6 @@
       <Filter>Common\Shape3D</Filter>
     </ClInclude>
     <ClInclude Include="ReadData.h" />
-    <ClInclude Include="SkyboxEffect.h">
-      <Filter>Common\SkyBox</Filter>
-    </ClInclude>
     <ClInclude Include="SideScrollerKeyboard.h">
       <Filter>Common\Control</Filter>
     </ClInclude>
@@ -74,9 +65,6 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="DeviceResources.cpp">
       <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="SkyboxEffect.cpp">
-      <Filter>Common\SkyBox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -101,12 +89,6 @@
     <Image Include="..\Assets\Protagonists\protagonist.png">
       <Filter>Assets\Protagonists</Filter>
     </Image>
-    <Image Include="..\Assets\Skybox\lobbycube.dds">
-      <Filter>Assets\Skyboxes</Filter>
-    </Image>
-    <Image Include="..\Assets\Skybox\skybox.dds">
-      <Filter>Assets\Skyboxes</Filter>
-    </Image>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest">
@@ -118,16 +100,5 @@
     <None Include="..\Assets\Protagonists\protagonist.sdkmesh">
       <Filter>Assets\Protagonists</Filter>
     </None>
-    <None Include="SkyboxEffect_Common.hlsli">
-      <Filter>Common\SkyBox</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="SkyboxEffect_PS.hlsl">
-      <Filter>Common\SkyBox</Filter>
-    </FxCompile>
-    <FxCompile Include="SkyboxEffect_VS.hlsl">
-      <Filter>Common\SkyBox</Filter>
-    </FxCompile>
   </ItemGroup>
 </Project>
