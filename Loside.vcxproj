@@ -206,8 +206,10 @@
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="InputSampler.h" />
     <ClInclude Include="OneVariableFunction.h" />
     <ClInclude Include="Protagonist.h" />
+    <ClInclude Include="InputSampler.cpp" />
     <ClInclude Include="SideScrollerKeyboard.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Plane3D.h" />

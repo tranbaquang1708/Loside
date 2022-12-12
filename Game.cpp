@@ -110,8 +110,11 @@ void Game::Update(DX::StepTimer const& timer)
     }
 #endif
 
+    // Protagonist
     m_protagonist.handleInput(keyboardInput);
     m_protagonist.update(elapsedTime);
+
+    // Enemy
 
     // limit pitch to straight up or straight down
     /*constexpr float limit = XM_PIDIV2 - 0.01f;
@@ -210,6 +213,9 @@ void Game::Render()
     //    Protagonist
     //    Move hard coded resolution to config file
     m_protagonist.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
+
+    //    Enemy
+    m_enemy.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
 
     m_spriteBatch->End();
     
@@ -366,6 +372,10 @@ void Game::CreateDeviceDependentResources()
         m_descriptorStatuses, XMUINT2(3840, 2160));
     m_protagonist.setState(); // Set to idle state
 
+    //    Enemy
+    m_enemy.loadTexture(L"../Assets/Enemies/enemy.dds", device, resourceUpload, m_resourceDescriptors,
+        m_descriptorStatuses, XMUINT2(3840, 2160));
+
     auto uploadResourcesFinished = resourceUpload.End(
         m_deviceResources->GetCommandQueue());
 
@@ -403,8 +413,12 @@ void Game::CreateWindowSizeDependentResources()
     float walkLength = m_protagonist.getNormalizedTextureSize(m_fullscreenRect).x * 0.5f;
     // Special quadratic function f(x) = -(1/2a) * (x - a)^2 + a/2
     // f(x) = 0 <=> x = 0 || x = 2a
-    QuadraticFunction trajection(-1.f/ (2 * walkLength), -walkLength, walkLength/2);
-    m_protagonist.loadWalkAnimation(trajection.sample(0, 2 * walkLength, 10), .15f);
+    QuadraticFunction trajectory(-1.f/ (2 * walkLength), -walkLength, walkLength/2);
+    m_protagonist.loadWalkAnimation(trajectory.sample(InputSampler::sampleInputUniform(0, 2 * walkLength, 10)), .15f);
+
+    //   Enemy
+    m_enemy.setDefaultScaling(m_fullscreenRect);
+    m_enemy.setPosition(XMFLOAT2(0.83f, 0.798f));
 
 //#ifdef _DEBUG
 //    //auto sample = trajection.sample(0, m_fullscreenRect.right * (float)(0.025), 10);
@@ -437,6 +451,9 @@ void Game::OnDeviceLost()
 
     // Protagonist
     m_protagonist.reset(m_descriptorStatuses);
+    
+    // Enemy
+    m_enemy.reset(m_descriptorStatuses);
 
     // END TODO
     // If using the DirectX Tool Kit for DX12, uncomment this line:

@@ -7,9 +7,13 @@
 #include "DeviceResources.h"
 #include "StepTimer.h"
 #include "OneVariableFunction.h"
+#include "InputSampler.cpp"
 #include "Animation2D.h"
 #include "Texture2D.h"
 #include "Protagonist.h"
+#include "Enemy.h"
+
+
 // A basic game implementation that creates a D3D12 device and
 // provides a game loop.
 class Game final : public DX::IDeviceNotify
@@ -76,15 +80,18 @@ private:
      std::vector<bool>                          m_descriptorStatuses;
      std::unique_ptr<DirectX::SpriteBatch>      m_spriteBatch;
     
-    //      Background
+    //    Background
     Texture2D                                   m_background;
     Animation2D                                 m_backgroundText;
     RECT                                        m_fullscreenRect;
 
-    //      Ground
+    //    Ground
     Texture2D                                   m_ground;
     Texture2D                                   m_groundText;
 
-    //      Protagonist
+    //    Protagonist
     Protagonist                                 m_protagonist;
+
+    //    Enemy
+    Enemy                                       m_enemy;
 };
