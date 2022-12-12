@@ -125,6 +125,7 @@ private:
 	float												frameTime;
 	int													currentFrameIdx;
 	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> frames;
+	std::vector<DirectX::XMUINT2>						bottomRightCoords;
 	bool												isLoop;
 	RECT												destRect;		// Assume all frames have the same size
 

@@ -29,6 +29,9 @@
     <Filter Include="Common\Control">
       <UniqueIdentifier>{91e62dc6-f1b3-4d47-b40e-a122d003b903}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Common\Math">
+      <UniqueIdentifier>{a81ecf6b-69cf-41a0-890a-055ed75550f9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -56,6 +59,12 @@
       <Filter>Common\Control</Filter>
     </ClInclude>
     <ClInclude Include="Protagonist.h">
+      <Filter>Common\Texture2D</Filter>
+    </ClInclude>
+    <ClInclude Include="OneVariableFunction.h">
+      <Filter>Common\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
       <Filter>Common\Texture2D</Filter>
     </ClInclude>
   </ItemGroup>

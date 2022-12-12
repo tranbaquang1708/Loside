@@ -102,44 +102,16 @@ void Game::Update(DX::StepTimer const& timer)
     //}
 
     // Keyboard controls
-    auto kb = m_keyboard->GetState();
+    Keyboard::State keyboardInput = m_keyboard->GetState();
 #ifdef _DEBUG
-    if (kb.Escape)
+    if (keyboardInput.Escape)
     {
         ExitGame();
     }
 #endif
 
-    // MYTODO: move MOVE_SPEED to config file, movespeed is calculated per sec
-    constexpr LONG MOVE_SPEED = 300; 
-    LONG fpsBasedMoveSpeed = static_cast<LONG>(MOVE_SPEED * elapsedTime);
-    /*Vector3 move = Vector3::Zero;
-
-    if (kb.W)
-        move.y += MOVE_SPEED;
-    if (kb.S)
-        move.y -= MOVE_SPEED;
-    if (kb.A)
-        move.x += MOVE_SPEED;
-    if (kb.D)
-        move.x -= MOVE_SPEED;
-    if (kb.Space)
-        move.z += MOVE_SPEED;
-    if (kb.X)
-        move.z -= MOVE_SPEED;*/
-
-
-    /*if (kb.Up)
-        m_pitch += 1.f * ROTATION_GAIN;
-
-    if (kb.Down)
-        m_pitch -= 1.f * ROTATION_GAIN;*/
-    
-    if (kb.Left)
-        m_protagonist.updatePosition(-fpsBasedMoveSpeed, 0);
-
-    if (kb.Right)
-        m_protagonist.updatePosition(+fpsBasedMoveSpeed, 0);
+    m_protagonist.handleInput(keyboardInput);
+    m_protagonist.update(elapsedTime);
 
     // limit pitch to straight up or straight down
     /*constexpr float limit = XM_PIDIV2 - 0.01f;
@@ -169,30 +141,30 @@ void Game::Update(DX::StepTimer const& timer)
     //    //Vector3(2.f, 2.f, 2.f), Vector3(1.f, 0.f, 0.f), Vector3::UnitY);
     //    m_cameraPos, lookAt, Vector3::UnitY);
 
-#ifdef _DEBUG
-    std::wstringstream outSS(L"");
-    /*outSS << L"Camera: ";
-    outSS << m_cameraPos.x << L", ";
-    outSS << m_cameraPos.y << L", ";
-    outSS << m_cameraPos.z << L"\n";*/
-
-    /*outSS << L"Look at: ";
-    outSS << XMVectorGetX(lookAt) << L", ";
-    outSS << XMVectorGetY(lookAt) << L", ";
-    outSS << XMVectorGetZ(lookAt) << L"\n";*/
-
-    /*outSS << L"Fullscreen rect: ";
-    outSS << m_fullscreenRect.top << L", ";
-    outSS << m_fullscreenRect.left << L", ";
-    outSS << m_fullscreenRect.right << L", ";
-    outSS << m_fullscreenRect.bottom << L"\n";*/
-
-    outSS << L"FrameTime: " << elapsedTime << L"(" << 1/elapsedTime << L"FPS)" << L"\n";
-
-    outSS << L"-------------------------------------\n";
-
-    OutputDebugStringW(outSS.str().c_str());
-#endif
+//#ifdef _DEBUG
+//    std::wstringstream outSS(L"");
+//    /*outSS << L"Camera: ";
+//    outSS << m_cameraPos.x << L", ";
+//    outSS << m_cameraPos.y << L", ";
+//    outSS << m_cameraPos.z << L"\n";*/
+//
+//    /*outSS << L"Look at: ";
+//    outSS << XMVectorGetX(lookAt) << L", ";
+//    outSS << XMVectorGetY(lookAt) << L", ";
+//    outSS << XMVectorGetZ(lookAt) << L"\n";*/
+//
+//    /*outSS << L"Fullscreen rect: ";
+//    outSS << m_fullscreenRect.top << L", ";
+//    outSS << m_fullscreenRect.left << L", ";
+//    outSS << m_fullscreenRect.right << L", ";
+//    outSS << m_fullscreenRect.bottom << L"\n";*/
+//
+//    outSS << L"FrameTime: " << elapsedTime << L"(" << 1/elapsedTime << L"FPS)" << L"\n";
+//
+//    outSS << L"-------------------------------------\n";
+//
+//    OutputDebugStringW(outSS.str().c_str());
+//#endif
     /*auto time = static_cast<float>(timer.GetTotalSeconds());
 
     m_world = Matrix::CreateRotationZ(cosf(time) * 2.f);*/
@@ -237,7 +209,7 @@ void Game::Render()
 
     //    Protagonist
     //    Move hard coded resolution to config file
-    m_protagonist.draw(m_spriteBatch, m_resourceDescriptors);
+    m_protagonist.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
 
     m_spriteBatch->End();
     
@@ -391,7 +363,8 @@ void Game::CreateDeviceDependentResources()
 
     //    Protagonist
     m_protagonist.loadTexture(L"../Assets/Protagonists/protagonist.dds", device, resourceUpload, m_resourceDescriptors,
-        m_descriptorStatuses);
+        m_descriptorStatuses, XMUINT2(3840, 2160));
+    m_protagonist.setState(); // Set to idle state
 
     auto uploadResourcesFinished = resourceUpload.End(
         m_deviceResources->GetCommandQueue());
@@ -421,9 +394,31 @@ void Game::CreateWindowSizeDependentResources()
     m_groundText.setRect(m_fullscreenRect);
 
     //    Protagonist
-    m_protagonist.setRect(static_cast<LONG>(m_fullscreenRect.right * 0.1),
-        static_cast<LONG>(m_fullscreenRect.right * 0.15),
-        static_cast<LONG>(m_fullscreenRect.bottom * 0.85));
+    m_protagonist.setDefaultScaling(m_fullscreenRect);
+    /*m_protagonist.setRect(static_cast<LONG>(m_fullscreenRect.right * 0.1),
+        static_cast<LONG>(m_fullscreenRect.bottom * 0.85),
+        m_fullscreenRect);*/
+    m_protagonist.setPosition(XMFLOAT2(0.03f, 0.68f));
+
+    float walkLength = m_protagonist.getNormalizedTextureSize(m_fullscreenRect).x * 0.5f;
+    // Special quadratic function f(x) = -(1/2a) * (x - a)^2 + a/2
+    // f(x) = 0 <=> x = 0 || x = 2a
+    QuadraticFunction trajection(-1.f/ (2 * walkLength), -walkLength, walkLength/2);
+    m_protagonist.loadWalkAnimation(trajection.sample(0, 2 * walkLength, 10), .15f);
+
+//#ifdef _DEBUG
+//    //auto sample = trajection.sample(0, m_fullscreenRect.right * (float)(0.025), 10);
+//    //auto sample = trajection.sample(0, 200, 10);
+//    auto sample = trajection.sample(0, 2 * walkLength, 10);
+//    std::wstringstream outSS(L"");
+//    for (size_t i = 0; i != sample.size(); ++i) {
+//        outSS << sample[i].x << L", " << sample[i].y << L"\n";
+//    }
+//
+//    outSS << L"-------------------------------------\n";
+//
+//    OutputDebugStringW(outSS.str().c_str());
+//#endif
 }
 
 void Game::OnDeviceLost()

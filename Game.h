@@ -6,6 +6,7 @@
 
 #include "DeviceResources.h"
 #include "StepTimer.h"
+#include "OneVariableFunction.h"
 #include "Animation2D.h"
 #include "Texture2D.h"
 #include "Protagonist.h"
