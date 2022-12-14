@@ -115,6 +115,8 @@ void Game::Update(DX::StepTimer const& timer)
     m_protagonist.update(elapsedTime);
 
     // Enemy
+    m_enemy.update(elapsedTime);
+    m_enemy.setProtagonistBottomRightX(m_protagonist.getPosition().x);
 
     // limit pitch to straight up or straight down
     /*constexpr float limit = XM_PIDIV2 - 0.01f;
@@ -165,7 +167,6 @@ void Game::Update(DX::StepTimer const& timer)
 //    outSS << L"FrameTime: " << elapsedTime << L"(" << 1/elapsedTime << L"FPS)" << L"\n";
 //
 //    outSS << L"-------------------------------------\n";
-//
 //    OutputDebugStringW(outSS.str().c_str());
 //#endif
     /*auto time = static_cast<float>(timer.GetTotalSeconds());
@@ -375,6 +376,7 @@ void Game::CreateDeviceDependentResources()
     //    Enemy
     m_enemy.loadTexture(L"../Assets/Enemies/enemy.dds", device, resourceUpload, m_resourceDescriptors,
         m_descriptorStatuses, XMUINT2(3840, 2160));
+    m_enemy.setState();
 
     auto uploadResourcesFinished = resourceUpload.End(
         m_deviceResources->GetCommandQueue());
@@ -387,12 +389,11 @@ void Game::CreateDeviceDependentResources()
 void Game::CreateWindowSizeDependentResources()
 {
     // TODO: Initialize windows-size dependent objects here.
+    // MYTODO: Move all hard-coded values to config file
     auto viewport = m_deviceResources->GetScreenViewport();
     m_spriteBatch->SetViewport(viewport);
 
     m_fullscreenRect = m_deviceResources->GetOutputSize();
-
-
 
     // Set texture render rectangle
     //    Background
@@ -410,15 +411,26 @@ void Game::CreateWindowSizeDependentResources()
         m_fullscreenRect);*/
     m_protagonist.setPosition(XMFLOAT2(0.03f, 0.68f));
 
-    float walkLength = m_protagonist.getNormalizedTextureSize(m_fullscreenRect).x * 0.5f;
+    float walkLength = m_protagonist.getTextureSize(m_fullscreenRect).x * 0.5f;
     // Special quadratic function f(x) = -(1/2a) * (x - a)^2 + a/2
     // f(x) = 0 <=> x = 0 || x = 2a
-    QuadraticFunction trajectory(-1.f/ (2 * walkLength), -walkLength, walkLength/2);
-    m_protagonist.loadWalkAnimation(trajectory.sample(InputSampler::sampleInputUniform(0, 2 * walkLength, 10)), .15f);
+    QuadraticFunction protagWalkTrajectory(-1.f/ (2 * walkLength), -walkLength, walkLength/2);
+    m_protagonist.loadWalkAnimation(
+        protagWalkTrajectory.sample(InputSampler::sampleInputUniform(0, 2 * walkLength, 10)),
+        .15f
+    );
 
     //   Enemy
     m_enemy.setDefaultScaling(m_fullscreenRect);
-    m_enemy.setPosition(XMFLOAT2(0.83f, 0.798f));
+    m_enemy.setPosition(XMFLOAT2(0.9f, 0.835f));
+
+    walkLength = m_enemy.getTextureSize(m_fullscreenRect).x;
+    halfCircleYPositiveFunction enemyWalkTrajectory(walkLength * walkLength * 0.5f, walkLength * 0.5f, -walkLength * 0.5f);
+    m_enemy.loadWalkAnimation(
+        enemyWalkTrajectory.sample(InputSampler::sampleInputUniformByAngle(0.f, walkLength, 10, walkLength * sqrtf(0.5f))),
+        InputSampler::sampleInputUniform(0, XM_PIDIV2, 10),
+        0.3f
+    );
 
 //#ifdef _DEBUG
 //    //auto sample = trajection.sample(0, m_fullscreenRect.right * (float)(0.025), 10);

@@ -203,6 +203,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Animation2D.h" />
+    <ClInclude Include="Attack.h" />
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Game.h" />

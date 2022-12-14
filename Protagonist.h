@@ -21,11 +21,11 @@ public:
 		textureResolution = resolution;
 	}
 
-	void loadWalkAnimation(std::vector<DirectX::XMFLOAT2> trajectory, float time)
+	void loadWalkAnimation(std::vector<DirectX::XMFLOAT2> sampledTrajectory, float time)
 	{
 		animationPlayedTime = 0;
 
-		walkTrajectory = trajectory;
+		walkTrajectory = sampledTrajectory;
 		walkAnimationTime = time;
 	}
 
@@ -111,7 +111,12 @@ public:
 		originalPosition = arg_position;
 	}
 
-	DirectX::XMFLOAT2 getNormalizedTextureSize(RECT fullscreenRect)
+	DirectX::XMFLOAT2 getPosition()
+	{
+		return position;
+	}
+
+	DirectX::XMFLOAT2 getTextureSize(RECT fullscreenRect)
 	{
 		DirectX::XMUINT2 textureSize = DirectX::GetTextureSize(this->texture.Get());
 		return DirectX::XMFLOAT2(
@@ -151,8 +156,6 @@ private:
 	DirectX::XMUINT2						textureResolution;
 	float									defaultScaling;
 
-	/*RECT									destRect;
-	RECT									originalDestRect;*/
 	DirectX::XMFLOAT2						position;
 	DirectX::XMFLOAT2						originalPosition;
 

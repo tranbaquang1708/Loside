@@ -8,7 +8,7 @@
 #include <vector>
 #include <DirectXMath.h>
 
-//#include <sstream>
+#include <sstream>
 
 class OneVariableFunction
 {};
@@ -48,9 +48,36 @@ private:
 class halfCircleYPositiveFunction : public OneVariableFunction
 {
 public:
-	halfCircleYPositiveFunction(float r, float centerX, float centerY)
+	halfCircleYPositiveFunction(float rSquare, float centerX, float centerY)
 	{
-		f = [r, centerX, centerY](float x) { return sqrt(r * r - (x - centerX) * (x - centerX)) + centerY; };
+		f = [rSquare, centerX, centerY](float x) { return sqrt(rSquare - (x - centerX) * (x - centerX)) + centerY; };
+	}
+
+	std::vector<DirectX::XMFLOAT2> sample(std::vector<float> inputs)
+	{
+#ifdef _DEBUG
+		assert(inputs.size() % 2 == 1 && "Need step to be odd in order to catch maximum value");
+#endif
+
+		std::vector<DirectX::XMFLOAT2> results;
+
+		for (int i = 0; i < inputs.size(); ++i) {
+			results.push_back(DirectX::XMFLOAT2(inputs[i], f(inputs[i])));
+		}
+
+//#ifdef _DEBUG
+//	    std::wstringstream outSS(L"");
+//
+//		for (int i = 0; i < inputs.size(); ++i) {
+//			outSS << results[i].x << L", " << results[i].y << L"\n";
+//		}
+//
+//		outSS << L"-------------------------------------\n";
+//		OutputDebugStringW(outSS.str().c_str());
+//
+//#endif
+
+		return results;
 	}
 
 private:
