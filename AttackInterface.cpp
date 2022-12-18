@@ -28,20 +28,22 @@ void AttackInterface::attackFire(Enemy* enemy)
 	fireCoolDownPassedTime = 0.f;
 	isFireCoolingDown = true;
 
-	enemy->getAttacked();
-
 	DirectX::XMFLOAT2 position(enemy->getPosition().x, enemy->getPosition().y - enemy->getTextureSize().y / 2.f);
 
 	if (enemy->getAilment() == Attack::Fire) {
 		position.y += flameAttack->size.y / 3.f;
 
 		flameAttack->attack(position);
+
+		enemy->getAttacked(flameAttack->getAnimationTime() + 1.f/60);
 		enemy->setAilment(Attack::None);
 	}
 	else {
 		position.y += fireAttack->size.y / 2.2f;
 
 		fireAttack->attack(position);
+
+		enemy->getAttacked(fireAttack->getAnimationTime() + 1.f/60);
 		enemy->setAilment(Attack::Fire);
 	}
 

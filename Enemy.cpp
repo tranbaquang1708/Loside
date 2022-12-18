@@ -22,18 +22,12 @@ void Enemy::loadTexture(const wchar_t* texturePath, ID3D12Device* device, Direct
 	isAttacked = false;
 }
 
-void Enemy::loadGetAttackedAnimation(float length)
-{
-	getAttackedAnimationTime = length;
-	stunTime = 0.f;
-}
-
 
 void Enemy::update(float elapsedTime, float arg_protagonistBottomRightX)
 {
 	if (isAttacked) {
-		stunTime += elapsedTime;
-		if (stunTime > getAttackedAnimationTime) {
+		stunPassedTime += elapsedTime;
+		if (stunPassedTime > stunTime) {
 			isAttacked = false;
 		}
 		return;
@@ -80,7 +74,8 @@ void Enemy::reset(std::vector<bool>& m_descriptorStatuses)
 	m_descriptorStatuses[descriptorMap] = false;
 }
 
-void Enemy::loadWalkAnimation(std::vector<DirectX::XMFLOAT2> sampledTrajectory,
+void Enemy::loadWalkAnimation(
+	std::vector<DirectX::XMFLOAT2> sampledTrajectory,
 	std::vector<float> sampledAngles,
 	float time)
 {
@@ -217,10 +212,11 @@ void Enemy::setAilment(unsigned short inAilment)
 	ailment = inAilment;
 }
 
-void Enemy::getAttacked()
+void Enemy::getAttacked(float _stunTime)
 {
+	stunTime = _stunTime;
 	isAttacked = true;
-	stunTime = 0;
+	stunPassedTime = 0;
 }
 
 

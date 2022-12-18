@@ -56,6 +56,11 @@ void Attack::setType(unsigned short inType)
 	type = inType;
 }
 
+float Attack::getAnimationTime()
+{
+	return frameTime * frames.size();
+}
+
 void Attack::update(float elapsedTime)
 {
 	if (!isOn) return;

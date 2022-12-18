@@ -25,11 +25,9 @@ public:
 	void loadWalkAnimation(std::vector<DirectX::XMFLOAT2> sampledTrajectory,
 		std::vector<float> sampledAngles,
 		float time);
-	void loadGetAttackedAnimation(float length);
 
 	void setDefaultScaling(RECT fullscreenRect);
 	void setPosition(DirectX::XMFLOAT2 arg_position);
-	DirectX::XMFLOAT2 getNormalizedTextureSize(RECT fullscreenRect);
 
 	void setAilment(unsigned short ailmentEnum);
 
@@ -55,7 +53,7 @@ public:
 	void stay(float elapsedTime);
 	void walk(float elapsedTime);
 
-	void getAttacked();
+	void getAttacked(float _stunTime);
 	
 	int pushToHeap(std::vector<bool>& m_descriptorStatuses, int startIdx = 0);
 
@@ -84,8 +82,8 @@ private:
 	std::vector<float>						walkAngles;
 
 	bool									isAttacked;
-	float									getAttackedAnimationTime;
 	float									stunTime;
+	float									stunPassedTime;
 
 	unsigned short							currentState;
 

@@ -22,6 +22,7 @@ struct Attack
 	void setDefaultScaling(RECT fullscreenRect);
 	void setType(unsigned short inType);
 	bool getIsOn();
+	float getAnimationTime();
 
 	void draw(std::unique_ptr<DirectX::SpriteBatch>& m_spriteBatch,
 		std::unique_ptr<DirectX::DescriptorHeap>& m_resourceDescriptors,
