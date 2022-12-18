@@ -111,12 +111,16 @@ void Game::Update(DX::StepTimer const& timer)
 #endif
 
     // Protagonist
-    m_protagonist.handleInput(keyboardInput);
-    m_protagonist.update(elapsedTime);
+    m_protagonist.handleInput(keyboardInput, m_keyboardTracker);
+    m_protagonist.update(elapsedTime, &m_enemy);
 
     // Enemy
-    m_enemy.update(elapsedTime);
-    m_enemy.setProtagonistBottomRightX(m_protagonist.getPosition().x);
+    m_enemy.update(elapsedTime, m_protagonist.getPosition().x);
+
+    // Attack
+    m_attackInterface.update(elapsedTime);
+    m_fireAttack.update(elapsedTime);
+    m_flameAttack.update(elapsedTime);
 
     // limit pitch to straight up or straight down
     /*constexpr float limit = XM_PIDIV2 - 0.01f;
@@ -217,6 +221,13 @@ void Game::Render()
 
     //    Enemy
     m_enemy.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
+    if (m_enemy.getAilment() != Attack::None) {
+        m_enemy.drawAilment(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect, m_ailments.at(m_enemy.getAilment()));
+    }
+
+    //    Attack
+    m_fireAttack.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
+    m_flameAttack.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
 
     m_spriteBatch->End();
     
@@ -369,14 +380,41 @@ void Game::CreateDeviceDependentResources()
         m_descriptorStatuses);
 
     //    Protagonist
+    // FIXME: Y-position got changed on resizing window
     m_protagonist.loadTexture(L"../Assets/Protagonists/protagonist.dds", device, resourceUpload, m_resourceDescriptors,
         m_descriptorStatuses, XMUINT2(3840, 2160));
     m_protagonist.setState(); // Set to idle state
+    m_protagonist.setPosition(XMFLOAT2(0.03f, 0.68f));
 
     //    Enemy
     m_enemy.loadTexture(L"../Assets/Enemies/enemy.dds", device, resourceUpload, m_resourceDescriptors,
         m_descriptorStatuses, XMUINT2(3840, 2160));
     m_enemy.setState();
+    m_enemy.setPosition(XMFLOAT2(0.9f, 0.835f));
+    m_enemy.setAilment(Attack::None);
+    m_enemy.loadGetAttackedAnimation(.3f);
+
+    //      Attacks
+    m_fireAttack.loadAnimation(L"../Assets/Attacks/Fire", device, resourceUpload, m_resourceDescriptors,
+        m_descriptorStatuses, XMUINT2(3840, 2160), 0, 0.3f);
+    m_fireAttack.setType(Attack::Fire);
+
+    m_flameAttack.loadAnimation(L"../Assets/Attacks/Flame", device, resourceUpload, m_resourceDescriptors,
+        m_descriptorStatuses, XMUINT2(3840, 2160), 0.05f);
+    m_flameAttack.setType(Attack::Flame);
+
+    m_attackInterface.loadAttacks(&m_fireAttack, &m_flameAttack);
+    // MYTODO: Move hard-coded values to config file
+    m_attackInterface.fireCoolDownTime = .8f;
+    m_protagonist.loadAttackInterface(&m_attackInterface);
+
+    //    Ailment
+    //      Fire
+    Ailment tempAilment;
+    tempAilment.loadTexture(L"../Assets/Ailments/Fire/fire.dds", device, resourceUpload, m_resourceDescriptors,
+        m_descriptorStatuses, XMUINT2(3840, 2160));
+    
+    m_ailments.insert({ Attack::Fire, tempAilment });
 
     auto uploadResourcesFinished = resourceUpload.End(
         m_deviceResources->GetCommandQueue());
@@ -409,9 +447,8 @@ void Game::CreateWindowSizeDependentResources()
     /*m_protagonist.setRect(static_cast<LONG>(m_fullscreenRect.right * 0.1),
         static_cast<LONG>(m_fullscreenRect.bottom * 0.85),
         m_fullscreenRect);*/
-    m_protagonist.setPosition(XMFLOAT2(0.03f, 0.68f));
 
-    float walkLength = m_protagonist.getTextureSize(m_fullscreenRect).x * 0.5f;
+    float walkLength = m_protagonist.getTextureSize(m_fullscreenRect).x * 0.8f;
     // Special quadratic function f(x) = -(1/2a) * (x - a)^2 + a/2
     // f(x) = 0 <=> x = 0 || x = 2a
     QuadraticFunction protagWalkTrajectory(-1.f/ (2 * walkLength), -walkLength, walkLength/2);
@@ -420,17 +457,27 @@ void Game::CreateWindowSizeDependentResources()
         .15f
     );
 
-    //   Enemy
+    //    Enemy
     m_enemy.setDefaultScaling(m_fullscreenRect);
-    m_enemy.setPosition(XMFLOAT2(0.9f, 0.835f));
 
-    walkLength = m_enemy.getTextureSize(m_fullscreenRect).x;
+    //    Attack
+    m_fireAttack.setDefaultScaling(m_fullscreenRect);
+
+    m_flameAttack.setDefaultScaling(m_fullscreenRect);
+
+    //    Ailment
+    for (auto& a : m_ailments) {
+        a.second.setDefaultScaling(m_fullscreenRect);
+    }
+
+    walkLength = m_enemy.getTextureSize().x;
     halfCircleYPositiveFunction enemyWalkTrajectory(walkLength * walkLength * 0.5f, walkLength * 0.5f, -walkLength * 0.5f);
     m_enemy.loadWalkAnimation(
         enemyWalkTrajectory.sample(InputSampler::sampleInputUniformByAngle(0.f, walkLength, 10, walkLength * sqrtf(0.5f))),
         InputSampler::sampleInputUniform(0, XM_PIDIV2, 10),
         0.3f
     );
+
 
 //#ifdef _DEBUG
 //    //auto sample = trajection.sample(0, m_fullscreenRect.right * (float)(0.025), 10);
@@ -464,8 +511,17 @@ void Game::OnDeviceLost()
     // Protagonist
     m_protagonist.reset(m_descriptorStatuses);
     
+    // Attack
+    m_fireAttack.reset(m_descriptorStatuses);
+    m_flameAttack.reset(m_descriptorStatuses);
+    
     // Enemy
     m_enemy.reset(m_descriptorStatuses);
+
+    // Ailment
+    for (auto& a : m_ailments) {
+        a.second.reset(m_descriptorStatuses);
+    }
 
     // END TODO
     // If using the DirectX Tool Kit for DX12, uncomment this line:

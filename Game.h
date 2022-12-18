@@ -11,6 +11,7 @@
 #include "Animation2D.h"
 #include "Texture2D.h"
 #include "Protagonist.h"
+#include "AttackInterface.h"
 #include "Enemy.h"
 
 
@@ -74,6 +75,7 @@ private:
     // Controls
     std::unique_ptr<DirectX::GamePad>           m_gamePad;
     std::unique_ptr<DirectX::Keyboard>          m_keyboard;
+    DirectX::Keyboard::KeyboardStateTracker     m_keyboardTracker;
 
     // Texture
      std::unique_ptr<DirectX::DescriptorHeap>   m_resourceDescriptors;
@@ -92,6 +94,14 @@ private:
     //    Protagonist
     Protagonist                                 m_protagonist;
 
+    //    Attacks
+    AttackInterface                             m_attackInterface;
+    Attack                                      m_fireAttack;
+    Attack                                      m_flameAttack;
+
     //    Enemy
     Enemy                                       m_enemy;
+
+    //    Ailments
+    std::map<unsigned short, Ailment>          m_ailments;
 };

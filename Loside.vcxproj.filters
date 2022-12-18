@@ -32,6 +32,9 @@
     <Filter Include="Common\DisplacementMath">
       <UniqueIdentifier>{a81ecf6b-69cf-41a0-890a-055ed75550f9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Common\Attack">
+      <UniqueIdentifier>{28bfad4f-0bc0-4d32-a5a3-dcac0811a75e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -74,6 +77,12 @@
       <Filter>Common\DisplacementMath</Filter>
     </ClInclude>
     <ClInclude Include="Attack.h">
+      <Filter>Common\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="AttackInterface.h">
+      <Filter>Common\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="Ailment.h">
       <Filter>Common\Texture2D</Filter>
     </ClInclude>
   </ItemGroup>
@@ -83,6 +92,21 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="DeviceResources.cpp">
       <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Protagonist.cpp">
+      <Filter>Common\Texture2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Common\Texture2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Attack.cpp">
+      <Filter>Common\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="AttackInterface.cpp">
+      <Filter>Common\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="Ailment.cpp">
+      <Filter>Common\Texture2D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

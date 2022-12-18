@@ -71,7 +71,7 @@ public:
 	void reset(std::vector<bool>& m_descriptorStatuses)
 	{
 		// MYTODO: Parallelize this
-		for (Microsoft::WRL::ComPtr<ID3D12Resource> f : frames) {
+		for (Microsoft::WRL::ComPtr<ID3D12Resource>& f : frames) {
 			f.Reset();
 		}
 
