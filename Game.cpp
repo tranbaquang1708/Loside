@@ -392,7 +392,6 @@ void Game::CreateDeviceDependentResources()
     m_enemy.setState();
     m_enemy.setPosition(XMFLOAT2(0.9f, 0.835f));
     m_enemy.setAilment(Attack::None);
-    m_enemy.loadGetAttackedAnimation(.3f);
 
     //      Attacks
     m_fireAttack.loadAnimation(L"../Assets/Attacks/Fire", device, resourceUpload, m_resourceDescriptors,
@@ -460,6 +459,17 @@ void Game::CreateWindowSizeDependentResources()
     //    Enemy
     m_enemy.setDefaultScaling(m_fullscreenRect);
 
+    walkLength = m_enemy.getTextureSize().x;
+    halfCircleYPositiveFunction enemyWalkTrajectory(walkLength * sqrtf(0.5f), walkLength * 0.5f, -walkLength * 0.5f);
+    std::vector<float> walkAngles = InputSampler::sampleInputFalling(3 * DirectX::XM_PIDIV4, DirectX::XM_PIDIV4, 10);
+    std::vector<float> rollAngles = InputSampler::sampleInputFalling(0, DirectX::XM_PIDIV2, 10);
+
+    m_enemy.loadWalkAnimation(
+        enemyWalkTrajectory.sampleByAngle(walkAngles),
+        rollAngles,
+        0.3f
+    );
+
     //    Attack
     m_fireAttack.setDefaultScaling(m_fullscreenRect);
 
@@ -469,14 +479,6 @@ void Game::CreateWindowSizeDependentResources()
     for (auto& a : m_ailments) {
         a.second.setDefaultScaling(m_fullscreenRect);
     }
-
-    walkLength = m_enemy.getTextureSize().x;
-    halfCircleYPositiveFunction enemyWalkTrajectory(walkLength * walkLength * 0.5f, walkLength * 0.5f, -walkLength * 0.5f);
-    m_enemy.loadWalkAnimation(
-        enemyWalkTrajectory.sample(InputSampler::sampleInputUniformByAngle(0.f, walkLength, 10, walkLength * sqrtf(0.5f))),
-        InputSampler::sampleInputUniform(0, XM_PIDIV2, 10),
-        0.3f
-    );
 
 
 //#ifdef _DEBUG

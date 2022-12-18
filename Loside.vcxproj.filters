@@ -108,6 +108,9 @@
     <ClCompile Include="Ailment.cpp">
       <Filter>Common\Texture2D</Filter>
     </ClCompile>
+    <ClCompile Include="OneVariableFunction.cpp">
+      <Filter>Common\DisplacementMath</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
