@@ -34,33 +34,41 @@ void Protagonist::loadAttackInterface(AttackInterface *inAttackInterface)
 	attackInterface = inAttackInterface;
 }
 
-void Protagonist::handleInput(DirectX::Keyboard::State keyboardInput, DirectX::Keyboard::KeyboardStateTracker& keyboardTracker)
+void Protagonist::setDefaultScaling(RECT fullscreenRect)
 {
-	keyboardTracker.Update(keyboardInput);
+	defaultScaling = static_cast<float>(fullscreenRect.right - fullscreenRect.left) / textureResolution.x;
+	DirectX::XMUINT2 originalSize = DirectX::GetTextureSize(this->texture.Get());
+	size.x = originalSize.x * defaultScaling / (fullscreenRect.right);
+	size.y = originalSize.y * defaultScaling / (fullscreenRect.bottom);
+}
 
-	if (keyboardInput.Left) {
-		if (currentState != WalkingLeftState && currentState != WalkingRightState) {
-			setState(WalkingLeftState);
-		}
+void Protagonist::setPosition(DirectX::XMFLOAT2 arg_position)
+{
+	position = arg_position;
+	originalPosition = arg_position;
+}
 
-		if (currentState == WalkingRightState) cancelWalk();
-	}
+void Protagonist::setState()
+{
+	setState(IdleState);
+}
 
-	// FIXME: Hold right then press left -> bug
-	if (keyboardInput.Right) {
-		if (currentState != WalkingLeftState && currentState != WalkingRightState) {
-			setState(WalkingRightState);
-		}
+void Protagonist::setState(unsigned short state)
+{
+	this->currentState = state;
 
-		if (currentState == WalkingLeftState) cancelWalk();
-	}
+	animationPlayedTime = 0;
+	originalPosition = position;
+}
 
-	if (keyboardTracker.pressed.X) { // X for fire
-		if (targetingEnemy != nullptr) {
-			attackInterface->attackFire(targetingEnemy);
-		}
-	}
+DirectX::XMFLOAT2 Protagonist::getPosition()
+{
+	return position;
+}
 
+DirectX::XMFLOAT2 Protagonist::getTextureSize()
+{
+	return size;
 }
 
 void Protagonist::update(float elapsedTime, Enemy* inEnemy)
@@ -70,6 +78,23 @@ void Protagonist::update(float elapsedTime, Enemy* inEnemy)
 	}
 
 	targetingEnemy = inEnemy;
+}
+
+void Protagonist::draw(std::unique_ptr<DirectX::SpriteBatch>& m_spriteBatch,
+	std::unique_ptr<DirectX::DescriptorHeap>& m_resourceDescriptors,
+	RECT fullscreenRect)
+{
+	m_spriteBatch->Draw(m_resourceDescriptors->GetGpuHandle(descriptorMap),
+		DirectX::GetTextureSize(this->texture.Get()),
+		DirectX::XMFLOAT2(position.x * fullscreenRect.right, position.y * fullscreenRect.bottom),
+		nullptr, DirectX::Colors::White, 0.f, DirectX::XMFLOAT2(0, 0),
+		defaultScaling);
+}
+
+void Protagonist::reset(std::vector<bool>& m_descriptorStatuses)
+{
+	texture.Reset();
+	m_descriptorStatuses[descriptorMap] = false;
 }
 
 void Protagonist::walk(float elapsedTime)
@@ -100,60 +125,32 @@ void Protagonist::cancelWalk()
 	setState(IdleState);
 }
 
-void Protagonist::draw(std::unique_ptr<DirectX::SpriteBatch>& m_spriteBatch,
-	std::unique_ptr<DirectX::DescriptorHeap>& m_resourceDescriptors,
-	RECT fullscreenRect)
+void Protagonist::handleInput(DirectX::Keyboard::State keyboardInput, DirectX::Keyboard::KeyboardStateTracker& keyboardTracker)
 {
+	keyboardTracker.Update(keyboardInput);
 
-	m_spriteBatch->Draw(m_resourceDescriptors->GetGpuHandle(descriptorMap),
-		DirectX::GetTextureSize(this->texture.Get()),
-		DirectX::XMFLOAT2(position.x * fullscreenRect.right, position.y * fullscreenRect.bottom),
-		nullptr, DirectX::Colors::White, 0.f, DirectX::XMFLOAT2(0, 0),
-		defaultScaling);
-}
+	if (keyboardInput.Left) {
+		if (currentState != WalkingLeftState && currentState != WalkingRightState) {
+			setState(WalkingLeftState);
+		}
 
-void Protagonist::reset(std::vector<bool>& m_descriptorStatuses)
-{
-	texture.Reset();
-	m_descriptorStatuses[descriptorMap] = false;
-}
+		if (currentState == WalkingRightState) cancelWalk();
+	}
 
-void Protagonist::setDefaultScaling(RECT fullscreenRect)
-{
-	defaultScaling = static_cast<float>(fullscreenRect.right - fullscreenRect.left) / textureResolution.x;
-}
+	// FIXME: Hold right then press left -> bug
+	if (keyboardInput.Right) {
+		if (currentState != WalkingLeftState && currentState != WalkingRightState) {
+			setState(WalkingRightState);
+		}
 
-void Protagonist::setPosition(DirectX::XMFLOAT2 arg_position)
-{
-	position = arg_position;
-	originalPosition = arg_position;
-}
+		if (currentState == WalkingLeftState) cancelWalk();
+	}
 
-DirectX::XMFLOAT2 Protagonist::getPosition()
-{
-	return position;
-}
-
-DirectX::XMFLOAT2 Protagonist::getTextureSize(RECT fullscreenRect)
-{
-	DirectX::XMUINT2 textureSize = DirectX::GetTextureSize(this->texture.Get());
-	return DirectX::XMFLOAT2(
-		textureSize.x * defaultScaling / fullscreenRect.right,
-		textureSize.y * defaultScaling / fullscreenRect.bottom
-	);
-}
-
-void Protagonist::setState(unsigned short state)
-{
-	this->currentState = state;
-
-	animationPlayedTime = 0;
-	originalPosition = position;
-}
-
-void Protagonist::setState()
-{
-	setState(IdleState);
+	if (keyboardTracker.pressed.X) { // X for fire
+		if (targetingEnemy != nullptr) {
+			attackInterface->attackFire(targetingEnemy);
+		}
+	}
 }
 
 int Protagonist::pushToHeap(std::vector<bool>& m_descriptorStatuses, int startIdx)

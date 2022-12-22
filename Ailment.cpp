@@ -23,6 +23,11 @@ void Ailment::setDefaultScaling(RECT fullscreenRect)
 	defaultScaling = static_cast<float>(fullscreenRect.right - fullscreenRect.left) / textureResolution.x;
 }
 
+void Ailment::setPosition(DirectX::XMFLOAT2 _position)
+{
+	position = _position;
+}
+
 void Ailment::draw(std::unique_ptr<DirectX::SpriteBatch>& m_spriteBatch,
 	std::unique_ptr<DirectX::DescriptorHeap>& m_resourceDescriptors,
 	RECT fullscreenRect)

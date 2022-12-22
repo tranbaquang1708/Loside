@@ -7,10 +7,13 @@
 #include "DeviceResources.h"
 #include "StepTimer.h"
 #include "OneVariableFunction.h"
-#include "InputSampler.cpp"
+#include "InputSampler.h"
 #include "Animation2D.h"
 #include "Texture2D.h"
+#include "SkillUI.h"
 #include "Protagonist.h"
+#include "AttackFire.h"
+#include "AttackFlame.h"
 #include "AttackInterface.h"
 #include "Enemy.h"
 
@@ -73,14 +76,13 @@ private:
 
     // TODO: Addiional class members
     // Controls
-    std::unique_ptr<DirectX::GamePad>           m_gamePad;
     std::unique_ptr<DirectX::Keyboard>          m_keyboard;
     DirectX::Keyboard::KeyboardStateTracker     m_keyboardTracker;
 
     // Texture
-     std::unique_ptr<DirectX::DescriptorHeap>   m_resourceDescriptors;
-     std::vector<bool>                          m_descriptorStatuses;
-     std::unique_ptr<DirectX::SpriteBatch>      m_spriteBatch;
+    std::unique_ptr<DirectX::DescriptorHeap>   m_resourceDescriptors;
+    std::vector<bool>                          m_descriptorStatuses;
+    std::unique_ptr<DirectX::SpriteBatch>      m_spriteBatch;  
     
     //    Background
     Texture2D                                   m_background;
@@ -91,13 +93,16 @@ private:
     Texture2D                                   m_ground;
     Texture2D                                   m_groundText;
 
+    //    UI
+    SkillUI                                     m_skillUI;
+
     //    Protagonist
     Protagonist                                 m_protagonist;
 
     //    Attacks
     AttackInterface                             m_attackInterface;
-    Attack                                      m_fireAttack;
-    Attack                                      m_flameAttack;
+    AttackFire                                  m_fireAttack;
+    AttackFlame                                 m_flameAttack;
 
     //    Enemy
     Enemy                                       m_enemy;

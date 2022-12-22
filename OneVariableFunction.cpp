@@ -1,12 +1,13 @@
 #include "pch.h"
 #include "OneVariableFunction.h"
 
+void OneVariableFunction::setF(std::function<float(float)> _f)
+{
+	f = _f;
+}
+
 std::vector<DirectX::XMFLOAT2> OneVariableFunction::sample(std::vector<float> inputs)
 {
-#ifdef _DEBUG
-	assert(inputs.size() % 2 == 1 && "Need step to be odd in order to catch maximum value");
-#endif
-
 	std::vector<DirectX::XMFLOAT2> results;
 	results.reserve(inputs.size());
 
@@ -19,7 +20,7 @@ std::vector<DirectX::XMFLOAT2> OneVariableFunction::sample(std::vector<float> in
 
 QuadraticFunction::QuadraticFunction(float a, float b, float c)
 {
-	f = [a, b, c](float x) { return a * (x + b) * (x + b) + c; };
+	setF([a, b, c](float x) { return a * (x + b) * (x + b) + c; });
 }
 
 halfCircleYPositiveFunction::halfCircleYPositiveFunction(float r, float centerX, float centerY) :
@@ -27,7 +28,7 @@ halfCircleYPositiveFunction::halfCircleYPositiveFunction(float r, float centerX,
 	centerX(centerX),
 	centerY(centerY)
 {
-	f = [r, centerX, centerY](float x) { return sqrt(r * r - (x - centerX) * (x - centerX)) + centerY; };
+	setF([r, centerX, centerY](float x) { return sqrt(r * r - (x - centerX) * (x - centerX)) + centerY; });
 }
 
 // Angle always has Ox as one of its arm

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Texture2D.h"
 #include "Enemy.h"
 #include "AttackInterface.h"
 
@@ -17,18 +16,16 @@ public:
 
 	void setDefaultScaling(RECT fullscreenRect);
 	void setPosition(DirectX::XMFLOAT2 arg_position);
-	void setState(unsigned short state);
 	void setState();
+	void setState(unsigned short state);
 
 	DirectX::XMFLOAT2 getPosition();
-	DirectX::XMFLOAT2 getTextureSize(RECT fullscreenRect);
+	DirectX::XMFLOAT2 getTextureSize();
 
 	void update(float elapsedTime, Enemy* inEnemy);
-
 	void draw(std::unique_ptr<DirectX::SpriteBatch>& m_spriteBatch,
 		std::unique_ptr<DirectX::DescriptorHeap>& m_resourceDescriptors,
 		RECT fullscreenRect);
-
 	void reset(std::vector<bool>& m_descriptorStatuses);
 
 	void walk(float elapsedTime);
@@ -36,12 +33,13 @@ public:
 
 	void handleInput(DirectX::Keyboard::State keyboardInput, DirectX::Keyboard::KeyboardStateTracker& keyboardTracker);
 
+private:
 	int pushToHeap(std::vector<bool>& m_descriptorStatuses, int startIdx = 0);
 
-private:
 	Microsoft::WRL::ComPtr<ID3D12Resource>	texture;
 	DirectX::XMUINT2						textureResolution;
 	float									defaultScaling;
+	DirectX::XMFLOAT2						size;
 
 	DirectX::XMFLOAT2						position;
 	DirectX::XMFLOAT2						originalPosition;

@@ -13,9 +13,10 @@
 class OneVariableFunction
 {
 public:
+	void setF(std::function<float(float)> _f);
 	std::vector<DirectX::XMFLOAT2> sample(std::vector<float> inputs);
 
-protected:
+private:
 	std::function<float(float)> f;
 };
 

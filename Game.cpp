@@ -44,13 +44,12 @@ void Game::Initialize(HWND window, int width, int height)
     // TODO: Change the timer settings if you want something other than the default variable timestep mode.
     // e.g. for 60 FPS fixed timestep update logic, call:
     
-    /*m_timer.SetFixedTimeStep(true);
-    m_timer.SetTargetElapsedSeconds(1.0 / 120);*/
+    m_timer.SetFixedTimeStep(true);
+    m_timer.SetTargetElapsedSeconds(1.0 / 120);
 
     // Additional initialization
 
     // Control
-    m_gamePad = std::make_unique<GamePad>();
     m_keyboard = std::make_unique<Keyboard>();
 }
 
@@ -76,30 +75,6 @@ void Game::Update(DX::StepTimer const& timer)
     // TODO: Add your game logic here.
     // Independent animations
     m_backgroundText.update(elapsedTime);
-    // MYTODO: Set animations based on elapsedTime
-    //auto time = static_cast<float>(timer.GetTotalSeconds());
-
-    // Pad conntrols
-    //auto pad = m_gamePad->GetState(0);
-
-    //if (pad.IsConnected())
-    //{
-    //    if (pad.IsViewPressed())
-    //    {
-    //        ExitGame();
-    //    }
-
-    //    if (pad.IsLeftStickPressed())
-    //    {
-    //        m_yaw = m_pitch = 0.f;
-    //    }
-    //    else
-    //    {
-    //        constexpr float ROTATION_GAIN = 0.1f;
-    //        m_yaw += -pad.thumbSticks.leftX * ROTATION_GAIN;
-    //        m_pitch += pad.thumbSticks.leftY * ROTATION_GAIN;
-    //    }
-    //}
 
     // Keyboard controls
     Keyboard::State keyboardInput = m_keyboard->GetState();
@@ -122,60 +97,9 @@ void Game::Update(DX::StepTimer const& timer)
     m_fireAttack.update(elapsedTime);
     m_flameAttack.update(elapsedTime);
 
-    // limit pitch to straight up or straight down
-    /*constexpr float limit = XM_PIDIV2 - 0.01f;
-    m_pitch = std::max(-limit, m_pitch);
-    m_pitch = std::min(+limit, m_pitch);*/
+    // UI
+    m_skillUI.update();
 
-    // keep longitude in sane range by wrapping
-    /*if (m_yaw > XM_PI)
-    {
-        m_yaw -= XM_2PI;
-    }
-    else if (m_yaw < -XM_PI)
-    {
-        m_yaw += XM_2PI;
-    }*/
-
-    /*float y = sinf(m_pitch);
-    float r = cosf(m_pitch);
-    float z = r * cosf(m_yaw);
-    float x = r * sinf(m_yaw);*/
-
-    //m_cameraPos += move;
-    //XMVECTOR lookAt = m_cameraPos +  Vector3(x, y, z);
-    //XMVECTOR lookAt = Vector3(x, y, z);
-    //m_view = XMMatrixLookAtRH(m_cameraPos, lookAt, Vector3::Up);
-    //m_view = Matrix::CreateLookAt(
-    //    //Vector3(2.f, 2.f, 2.f), Vector3(1.f, 0.f, 0.f), Vector3::UnitY);
-    //    m_cameraPos, lookAt, Vector3::UnitY);
-
-//#ifdef _DEBUG
-//    std::wstringstream outSS(L"");
-//    /*outSS << L"Camera: ";
-//    outSS << m_cameraPos.x << L", ";
-//    outSS << m_cameraPos.y << L", ";
-//    outSS << m_cameraPos.z << L"\n";*/
-//
-//    /*outSS << L"Look at: ";
-//    outSS << XMVectorGetX(lookAt) << L", ";
-//    outSS << XMVectorGetY(lookAt) << L", ";
-//    outSS << XMVectorGetZ(lookAt) << L"\n";*/
-//
-//    /*outSS << L"Fullscreen rect: ";
-//    outSS << m_fullscreenRect.top << L", ";
-//    outSS << m_fullscreenRect.left << L", ";
-//    outSS << m_fullscreenRect.right << L", ";
-//    outSS << m_fullscreenRect.bottom << L"\n";*/
-//
-//    outSS << L"FrameTime: " << elapsedTime << L"(" << 1/elapsedTime << L"FPS)" << L"\n";
-//
-//    outSS << L"-------------------------------------\n";
-//    OutputDebugStringW(outSS.str().c_str());
-//#endif
-    /*auto time = static_cast<float>(timer.GetTotalSeconds());
-
-    m_world = Matrix::CreateRotationZ(cosf(time) * 2.f);*/
     // END TODO
     elapsedTime;
 
@@ -216,12 +140,12 @@ void Game::Render()
     m_groundText.draw(m_spriteBatch, m_resourceDescriptors);
 
     //    Protagonist
-    //    Move hard coded resolution to config file
+    //    MYTODO: Move hard coded resolution to config file
     m_protagonist.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
 
     //    Enemy
     m_enemy.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
-    if (m_enemy.getAilment() != Attack::None) {
+    if (m_enemy.getAilment() != Ailment::None) {
         m_enemy.drawAilment(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect, m_ailments.at(m_enemy.getAilment()));
     }
 
@@ -229,8 +153,10 @@ void Game::Render()
     m_fireAttack.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
     m_flameAttack.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
 
+    //    UI
+    m_skillUI.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
+
     m_spriteBatch->End();
-    
     
     // END TODO
     PIXEndEvent(commandList);
@@ -274,19 +200,16 @@ void Game::Clear()
 void Game::OnActivated()
 {
     // TODO: Game is becoming active window.
-    m_gamePad->Resume();
 }
 
 void Game::OnDeactivated()
 {
     // TODO: Game is becoming background window.
-    m_gamePad->Suspend();
 }
 
 void Game::OnSuspending()
 {
     // TODO: Game is being power-suspended (or minimized).
-    m_gamePad->Suspend();
 }
 
 void Game::OnResuming()
@@ -294,7 +217,6 @@ void Game::OnResuming()
     m_timer.ResetElapsedTime();
 
     // TODO: Game is being power-resumed (or returning from minimize).
-    m_gamePad->Resume();
 }
 
 void Game::OnWindowMoved()
@@ -391,29 +313,33 @@ void Game::CreateDeviceDependentResources()
         m_descriptorStatuses, XMUINT2(3840, 2160));
     m_enemy.setState();
     m_enemy.setPosition(XMFLOAT2(0.9f, 0.835f));
-    m_enemy.setAilment(Attack::None);
+    m_enemy.setAilment(Ailment::None);
 
     //      Attacks
     m_fireAttack.loadAnimation(L"../Assets/Attacks/Fire", device, resourceUpload, m_resourceDescriptors,
-        m_descriptorStatuses, XMUINT2(3840, 2160), 0, 0.3f);
-    m_fireAttack.setType(Attack::Fire);
+        m_descriptorStatuses, XMUINT2(3840, 2160), 0, .3f);
 
     m_flameAttack.loadAnimation(L"../Assets/Attacks/Flame", device, resourceUpload, m_resourceDescriptors,
-        m_descriptorStatuses, XMUINT2(3840, 2160), 0.05f);
-    m_flameAttack.setType(Attack::Flame);
+        m_descriptorStatuses, XMUINT2(3840, 2160), 0.025f);
 
     m_attackInterface.loadAttacks(&m_fireAttack, &m_flameAttack);
     // MYTODO: Move hard-coded values to config file
-    m_attackInterface.fireCoolDownTime = .8f;
+    m_attackInterface.setFireCoolDownTime(.8f);
     m_protagonist.loadAttackInterface(&m_attackInterface);
 
     //    Ailment
     //      Fire
     Ailment tempAilment;
+
     tempAilment.loadTexture(L"../Assets/Ailments/Fire/fire.dds", device, resourceUpload, m_resourceDescriptors,
         m_descriptorStatuses, XMUINT2(3840, 2160));
-    
-    m_ailments.insert({ Attack::Fire, tempAilment });
+    m_ailments.insert({ Ailment::Fire, tempAilment });
+
+    //    UI
+    m_skillUI.loadFireTexture(L"../Assets/UI/Skills/Fire/fire.dds", L"../Assets/UI/KeyboardIcons/x.dds",
+        device, resourceUpload, m_resourceDescriptors,
+        m_descriptorStatuses, XMUINT2(3840, 2160), XMUINT2(3840, 2160));
+    m_skillUI.setAttackInterface(&m_attackInterface);
 
     auto uploadResourcesFinished = resourceUpload.End(
         m_deviceResources->GetCommandQueue());
@@ -443,16 +369,13 @@ void Game::CreateWindowSizeDependentResources()
 
     //    Protagonist
     m_protagonist.setDefaultScaling(m_fullscreenRect);
-    /*m_protagonist.setRect(static_cast<LONG>(m_fullscreenRect.right * 0.1),
-        static_cast<LONG>(m_fullscreenRect.bottom * 0.85),
-        m_fullscreenRect);*/
 
-    float walkLength = m_protagonist.getTextureSize(m_fullscreenRect).x * 0.8f;
+    float walkLength = m_protagonist.getTextureSize().x * 0.8f;
     // Special quadratic function f(x) = -(1/2a) * (x - a)^2 + a/2
     // f(x) = 0 <=> x = 0 || x = 2a
     QuadraticFunction protagWalkTrajectory(-1.f/ (2 * walkLength), -walkLength, walkLength/2);
     m_protagonist.loadWalkAnimation(
-        protagWalkTrajectory.sample(InputSampler::sampleInputUniform(0, 2 * walkLength, 10)),
+        protagWalkTrajectory.sample(InputSampler::sampleInputUniform(0, 2 * walkLength, 20)),
         .15f
     );
 
@@ -480,20 +403,9 @@ void Game::CreateWindowSizeDependentResources()
         a.second.setDefaultScaling(m_fullscreenRect);
     }
 
-
-//#ifdef _DEBUG
-//    //auto sample = trajection.sample(0, m_fullscreenRect.right * (float)(0.025), 10);
-//    //auto sample = trajection.sample(0, 200, 10);
-//    auto sample = trajection.sample(0, 2 * walkLength, 10);
-//    std::wstringstream outSS(L"");
-//    for (size_t i = 0; i != sample.size(); ++i) {
-//        outSS << sample[i].x << L", " << sample[i].y << L"\n";
-//    }
-//
-//    outSS << L"-------------------------------------\n";
-//
-//    OutputDebugStringW(outSS.str().c_str());
-//#endif
+    //   UI
+    m_skillUI.setFireDefaultScaling(m_fullscreenRect);
+    m_skillUI.setFirePosition(XMFLOAT2(0.9f, 0.92f));
 }
 
 void Game::OnDeviceLost()

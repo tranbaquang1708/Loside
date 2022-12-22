@@ -26,14 +26,41 @@
     <Filter Include="Common\Shape3D">
       <UniqueIdentifier>{12097bef-2b08-40f1-ad38-3ff4bb49e3f0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Common\Control">
-      <UniqueIdentifier>{91e62dc6-f1b3-4d47-b40e-a122d003b903}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Common\DisplacementMath">
       <UniqueIdentifier>{a81ecf6b-69cf-41a0-890a-055ed75550f9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Common\Attack">
       <UniqueIdentifier>{28bfad4f-0bc0-4d32-a5a3-dcac0811a75e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\Enemy">
+      <UniqueIdentifier>{db623f29-aa5a-4b0a-b37b-1fa420972089}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\Attacks">
+      <UniqueIdentifier>{b16f645d-3aee-4494-8f61-1a66a8dd25bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\Attacks\Fire">
+      <UniqueIdentifier>{29f1eae2-b06d-46bc-9236-d0ce4cd0e816}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\Attacks\Flame">
+      <UniqueIdentifier>{f0f5872c-773a-4fa7-a676-51d39d890432}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\Ailments">
+      <UniqueIdentifier>{dd7dbb9b-4a0e-4390-822e-d757bb2e6981}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\Ailments\Fire">
+      <UniqueIdentifier>{8d3c98f2-d92c-4f13-bda5-6c2716e6841e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\Grounds">
+      <UniqueIdentifier>{687d692f-7d63-47e7-a277-262e34b8ab46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\UI">
+      <UniqueIdentifier>{16a2e7d7-d60a-4228-9ea9-21697cdaef59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\UI">
+      <UniqueIdentifier>{414e1f30-d338-4f58-8834-cc1b4e7783f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\UI\Skills">
+      <UniqueIdentifier>{9b296ed3-d801-4071-bd1a-d30c8c82d532}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -51,16 +78,10 @@
     <ClInclude Include="Animation2D.h">
       <Filter>Common\Texture2D</Filter>
     </ClInclude>
-    <ClInclude Include="Texture2D.h">
-      <Filter>Common\Texture2D</Filter>
-    </ClInclude>
     <ClInclude Include="Plane3D.h">
       <Filter>Common\Shape3D</Filter>
     </ClInclude>
     <ClInclude Include="ReadData.h" />
-    <ClInclude Include="SideScrollerKeyboard.h">
-      <Filter>Common\Control</Filter>
-    </ClInclude>
     <ClInclude Include="Protagonist.h">
       <Filter>Common\Texture2D</Filter>
     </ClInclude>
@@ -69,9 +90,6 @@
     </ClInclude>
     <ClInclude Include="Enemy.h">
       <Filter>Common\Texture2D</Filter>
-    </ClInclude>
-    <ClInclude Include="InputSampler.cpp">
-      <Filter>Common\DisplacementMath</Filter>
     </ClInclude>
     <ClInclude Include="InputSampler.h">
       <Filter>Common\DisplacementMath</Filter>
@@ -84,6 +102,18 @@
     </ClInclude>
     <ClInclude Include="Ailment.h">
       <Filter>Common\Texture2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture2D.h">
+      <Filter>Common\Texture2D</Filter>
+    </ClInclude>
+    <ClInclude Include="AttackFire.h">
+      <Filter>Common\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="AttackFlame.h">
+      <Filter>Common\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="SkillUI.h">
+      <Filter>Common\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -111,6 +141,21 @@
     <ClCompile Include="OneVariableFunction.cpp">
       <Filter>Common\DisplacementMath</Filter>
     </ClCompile>
+    <ClCompile Include="AttackFire.cpp">
+      <Filter>Common\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="AttackFlame.cpp">
+      <Filter>Common\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation2D.cpp">
+      <Filter>Common\Texture2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture2D.cpp">
+      <Filter>Common\Texture2D</Filter>
+    </ClCompile>
+    <ClCompile Include="SkillUI.cpp">
+      <Filter>Common\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -131,8 +176,92 @@
     <Image Include="..\Assets\Protagonists\protagonist.dds">
       <Filter>Assets\Protagonists</Filter>
     </Image>
-    <Image Include="..\Assets\Protagonists\protagonist.png">
-      <Filter>Assets\Protagonists</Filter>
+    <Image Include="..\Assets\Enemies\Enemy.dds">
+      <Filter>Assets\Enemy</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Fire\0.dds">
+      <Filter>Assets\Attacks\Fire</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Flame\00.dds">
+      <Filter>Assets\Attacks\Flame</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Flame\01.dds">
+      <Filter>Assets\Attacks\Flame</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Flame\02.dds">
+      <Filter>Assets\Attacks\Flame</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Flame\03.dds">
+      <Filter>Assets\Attacks\Flame</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Flame\04.dds">
+      <Filter>Assets\Attacks\Flame</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Flame\05.dds">
+      <Filter>Assets\Attacks\Flame</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Flame\06.dds">
+      <Filter>Assets\Attacks\Flame</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Flame\07.dds">
+      <Filter>Assets\Attacks\Flame</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Flame\08.dds">
+      <Filter>Assets\Attacks\Flame</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Flame\09.dds">
+      <Filter>Assets\Attacks\Flame</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Flame\10.dds">
+      <Filter>Assets\Attacks\Flame</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Flame\11.dds">
+      <Filter>Assets\Attacks\Flame</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Flame\12.dds">
+      <Filter>Assets\Attacks\Flame</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Flame\13.dds">
+      <Filter>Assets\Attacks\Flame</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Flame\14.dds">
+      <Filter>Assets\Attacks\Flame</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Flame\15.dds">
+      <Filter>Assets\Attacks\Flame</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Flame\16.dds">
+      <Filter>Assets\Attacks\Flame</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Flame\17.dds">
+      <Filter>Assets\Attacks\Flame</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Flame\18.dds">
+      <Filter>Assets\Attacks\Flame</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Flame\19.dds">
+      <Filter>Assets\Attacks\Flame</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Flame\20.dds">
+      <Filter>Assets\Attacks\Flame</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Flame\21.dds">
+      <Filter>Assets\Attacks\Flame</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Flame\22.dds">
+      <Filter>Assets\Attacks\Flame</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Flame\23.dds">
+      <Filter>Assets\Attacks\Flame</Filter>
+    </Image>
+    <Image Include="..\Assets\Ailments\Fire\fire.dds">
+      <Filter>Assets\Ailments\Fire</Filter>
+    </Image>
+    <Image Include="..\Assets\Grounds\ground.dds">
+      <Filter>Assets\Grounds</Filter>
+    </Image>
+    <Image Include="..\Assets\Grounds\groundText.dds">
+      <Filter>Assets\Grounds</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
@@ -142,8 +271,5 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="..\Assets\Protagonists\protagonist.sdkmesh">
-      <Filter>Assets\Protagonists</Filter>
-    </None>
   </ItemGroup>
 </Project>

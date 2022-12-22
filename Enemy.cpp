@@ -19,59 +19,7 @@ void Enemy::loadTexture(const wchar_t* texturePath, ID3D12Device* device, Direct
 	originalRotation = 0.f;
 	color = DirectX::Colors::White;
 
-	isAttacked = false;
-}
-
-
-void Enemy::update(float elapsedTime, float arg_protagonistBottomRightX)
-{
-	if (isAttacked) {
-		stunPassedTime += elapsedTime;
-		if (stunPassedTime > stunTime) {
-			isAttacked = false;
-		}
-		return;
-	}
-
-	protagonistBottomRightX = arg_protagonistBottomRightX;
-
-	if (currentState == IdleState) {
-		stay(elapsedTime);
-	}
-	if (currentState == WalkingLeftState || currentState == WalkingRightState) {
-		walk(elapsedTime);
-	}
-}
-
-void Enemy::draw(std::unique_ptr<DirectX::SpriteBatch>& m_spriteBatch,
-	std::unique_ptr<DirectX::DescriptorHeap>& m_resourceDescriptors,
-	RECT fullscreenRect)
-{
-	DirectX::XMUINT2 textureSize = DirectX::GetTextureSize(this->texture.Get());
-
-	m_spriteBatch->Draw(m_resourceDescriptors->GetGpuHandle(descriptorMap),
-		textureSize,
-		DirectX::XMFLOAT2(position.x * fullscreenRect.right, position.y * fullscreenRect.bottom),
-		nullptr,
-		color, rotation,
-		DirectX::XMFLOAT2(textureSize.x / 2.f, textureSize.y / 2.f),
-		defaultScaling);
-}
-
-void Enemy::drawAilment(std::unique_ptr<DirectX::SpriteBatch>& m_spriteBatch,
-	std::unique_ptr<DirectX::DescriptorHeap>& m_resourceDescriptors,
-	RECT fullscreenRect, Ailment ailmentObject)
-{
-	 //OutputDebugStringW(L"Draw-----------------\n");
-	ailmentObject.position.x = position.x;
-	ailmentObject.position.y = position.y - getTextureSize().y;
-	ailmentObject.draw(m_spriteBatch, m_resourceDescriptors, fullscreenRect);
-}
-
-void Enemy::reset(std::vector<bool>& m_descriptorStatuses)
-{
-	texture.Reset();
-	m_descriptorStatuses[descriptorMap] = false;
+	currentAttackedState = None;
 }
 
 void Enemy::loadWalkAnimation(
@@ -104,6 +52,16 @@ void Enemy::setPosition(DirectX::XMFLOAT2 arg_position)
 	originalPosition = arg_position;
 }
 
+void Enemy::setAilment(unsigned short _ailment)
+{
+	ailment = _ailment;
+}
+
+void Enemy::setState()
+{
+	setState(IdleState);
+}
+
 void Enemy::setState(unsigned short state)
 {
 	this->currentState = state;
@@ -123,12 +81,79 @@ void Enemy::setWalkState()
 	}
 }
 
-void Enemy::setState()
+DirectX::XMFLOAT2 Enemy::getPosition()
 {
-	setState(IdleState);
+	return position;
 }
 
-void Enemy::stay(float elapsedTime)
+DirectX::XMFLOAT2 Enemy::getTextureSize()
+{
+	return size;
+}
+
+unsigned short Enemy::getAilment()
+{
+	return ailment;
+}
+
+void Enemy::update(float elapsedTime, float arg_protagonistBottomRightX)
+{
+	if (currentAttackedState == HitStun) {
+		attackedAnimationPlayedTime += elapsedTime;
+		if (attackedAnimationPlayedTime > stunTime) {
+			currentAttackedState = None;
+		}
+		return;
+	}
+
+	if (currentAttackedState == PushedBackRight || currentAttackedState == PushedBackLeft) {
+		playPushedBackAnimation(elapsedTime);
+		return;
+	}
+
+	protagonistBottomRightX = arg_protagonistBottomRightX;
+
+	if (currentState == IdleState) {
+		playStayAnimation(elapsedTime);
+		return;
+	}
+
+	if (currentState == WalkingLeftState || currentState == WalkingRightState) {
+		playWalkAnimation(elapsedTime);
+		return;
+	}
+}
+
+void Enemy::draw(std::unique_ptr<DirectX::SpriteBatch>& m_spriteBatch,
+	std::unique_ptr<DirectX::DescriptorHeap>& m_resourceDescriptors,
+	RECT fullscreenRect)
+{
+	DirectX::XMUINT2 textureSize = DirectX::GetTextureSize(this->texture.Get());
+
+	m_spriteBatch->Draw(m_resourceDescriptors->GetGpuHandle(descriptorMap),
+		textureSize,
+		DirectX::XMFLOAT2(position.x * fullscreenRect.right, position.y * fullscreenRect.bottom),
+		nullptr,
+		color, rotation,
+		DirectX::XMFLOAT2(textureSize.x / 2.f, textureSize.y / 2.f),
+		defaultScaling);
+}
+
+void Enemy::drawAilment(std::unique_ptr<DirectX::SpriteBatch>& m_spriteBatch,
+	std::unique_ptr<DirectX::DescriptorHeap>& m_resourceDescriptors,
+	RECT fullscreenRect, Ailment ailmentObject)
+{
+	ailmentObject.setPosition(DirectX::XMFLOAT2(position.x, position.y - getTextureSize().y));
+	ailmentObject.draw(m_spriteBatch, m_resourceDescriptors, fullscreenRect);
+}
+
+void Enemy::reset(std::vector<bool>& m_descriptorStatuses)
+{
+	texture.Reset();
+	m_descriptorStatuses[descriptorMap] = false;
+}
+
+void Enemy::playStayAnimation(float elapsedTime)
 {
 	// MYTODO: Need better stay function
 	animationPlayedTime += elapsedTime;
@@ -138,13 +163,7 @@ void Enemy::stay(float elapsedTime)
 	}
 }
 
-unsigned short Enemy::getAilment()
-{
-	return ailment;
-}
-
-
-void Enemy::walk(float elapsedTime)
+void Enemy::playWalkAnimation(float elapsedTime)
 {
 	animationPlayedTime += elapsedTime;
 
@@ -166,57 +185,56 @@ void Enemy::walk(float elapsedTime)
 
 	if (currentPositionIdx == walkTrajectory.size() - 1) {
 		setState(IdleState);
-		/*if (currentState == WalkingRightState) {
-			currentState = WalkingLeftState;
-		}
-		else {
-			currentState = WalkingRightState;
-		}*/
 	}
-
-	//#ifdef _DEBUG
-	//		std::wstringstream outSS(L"");
-	//		outSS << currentState << L"\n";
-	//		outSS << currentPositionIdx << L": " << walkAngles[currentPositionIdx] << L"\n";
-	//		outSS << currentPositionIdx  << L": " << walkTrajectory[currentPositionIdx].x << L", " 
-	//			<< walkTrajectory[currentPositionIdx].y << L"\n";
-	//		outSS << L"-------------------------------------\n";
-	//		
-	//		OutputDebugStringW(outSS.str().c_str());
-	//#endif
 }
 
-/*void applyAilment(Attack::Attack *attack)
+void Enemy::playPushedBackAnimation(float elapsedTime)
 {
-	if (ailment != NULL) {
-		ailment.apply(attack);
+	attackedAnimationPlayedTime += elapsedTime;
+
+	size_t currentPositionIdx = std::min(
+		pushedBackTrajectory.size() - 1,
+		static_cast<size_t>(attackedAnimationPlayedTime * (pushedBackTrajectory.size() - 1) / pushedBackTime)
+	);
+
+	if (currentAttackedState == PushedBackRight) {
+		position.x = attackedOriginalPosition.x + pushedBackTrajectory[currentPositionIdx].x;
 	}
 	else {
-		ailment = attack;
-
+		position.x = attackedOriginalPosition.x - pushedBackTrajectory[currentPositionIdx].x;
 	}
-}*/
 
-DirectX::XMFLOAT2 Enemy::getTextureSize()
-{
-	return size;
-}
-
-DirectX::XMFLOAT2 Enemy::getPosition()
-{
-	return position;
-}
-
-void Enemy::setAilment(unsigned short inAilment)
-{
-	ailment = inAilment;
+	if (currentPositionIdx == pushedBackTrajectory.size() - 1) {
+		currentAttackedState = None;
+	}
 }
 
 void Enemy::getAttacked(float _stunTime)
 {
 	stunTime = _stunTime;
-	isAttacked = true;
-	stunPassedTime = 0;
+	currentAttackedState = HitStun;
+	attackedAnimationPlayedTime = 0;
+}
+
+void Enemy::getPushedBack(float displacement, float duration)
+{
+	// MYTODO: Find better way to implement push back direction
+	originalPosition.x += displacement;
+	pushedBackTime = duration;
+	attackedOriginalPosition = position;
+
+	if (displacement > 0) {
+		currentAttackedState = PushedBackRight;
+	}
+	else {
+		currentAttackedState = PushedBackLeft;
+		displacement = -displacement;
+	}
+	
+	std::vector<float> pushedBackXTrajectory = InputSampler::sampleInputFriction(0, displacement, 10);
+	pushedBackTrajectory.clear();
+	std::transform(pushedBackXTrajectory.begin(), pushedBackXTrajectory.end(), back_inserter(pushedBackTrajectory),
+		[this](float const& x) { return DirectX::XMFLOAT2(x, position.y); });
 }
 
 
