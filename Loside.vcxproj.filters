@@ -62,6 +62,12 @@
     <Filter Include="Assets\UI\Skills">
       <UniqueIdentifier>{9b296ed3-d801-4071-bd1a-d30c8c82d532}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Assets\UI\Skills\Fire">
+      <UniqueIdentifier>{67b8f719-60ca-49a9-96f0-e6e07627cbd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\UI\KeyboardIcons">
+      <UniqueIdentifier>{42d8cd19-a69f-45e3-b401-d73be5b29041}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -262,6 +268,12 @@
     </Image>
     <Image Include="..\Assets\Grounds\groundText.dds">
       <Filter>Assets\Grounds</Filter>
+    </Image>
+    <Image Include="..\Assets\UI\Skills\Fire\fire.dds">
+      <Filter>Assets\UI\Skills\Fire</Filter>
+    </Image>
+    <Image Include="..\Assets\UI\KeyboardIcons\x.dds">
+      <Filter>Assets\UI\KeyboardIcons</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

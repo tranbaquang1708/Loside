@@ -128,17 +128,18 @@ void Protagonist::cancelWalk()
 void Protagonist::handleInput(DirectX::Keyboard::State keyboardInput, DirectX::Keyboard::KeyboardStateTracker& keyboardTracker)
 {
 	keyboardTracker.Update(keyboardInput);
-
-	if (keyboardInput.Left) {
+	
+	if (keyboardInput.Left && keyboardInput.Right) {
+		cancelWalk();
+	}
+	else if (keyboardInput.Left) {
 		if (currentState != WalkingLeftState && currentState != WalkingRightState) {
 			setState(WalkingLeftState);
 		}
 
 		if (currentState == WalkingRightState) cancelWalk();
 	}
-
-	// FIXME: Hold right then press left -> bug
-	if (keyboardInput.Right) {
+	else if (keyboardInput.Right) {
 		if (currentState != WalkingLeftState && currentState != WalkingRightState) {
 			setState(WalkingRightState);
 		}

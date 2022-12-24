@@ -281,6 +281,8 @@
     <Image Include="..\Assets\Grounds\ground.dds" />
     <Image Include="..\Assets\Grounds\groundText.dds" />
     <Image Include="..\Assets\Protagonists\protagonist.dds" />
+    <Image Include="..\Assets\UI\KeyboardIcons\x.dds" />
+    <Image Include="..\Assets\UI\Skills\Fire\fire.dds" />
     <Image Include="directx.ico" />
   </ItemGroup>
   <ItemGroup>
