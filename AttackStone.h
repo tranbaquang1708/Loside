@@ -1,8 +1,10 @@
 #pragma once
 
+#pragma once
+
 #include "Attack.h"
 
-class AttackFlame : public Attack
+class AttackStone : public Attack
 {
 public:
 	unsigned short getType();

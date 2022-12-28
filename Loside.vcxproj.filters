@@ -62,6 +62,30 @@
     <Filter Include="Assets\UI\Skills">
       <UniqueIdentifier>{9b296ed3-d801-4071-bd1a-d30c8c82d532}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Assets\Attacks\Stone">
+      <UniqueIdentifier>{c2d12d73-3951-47e7-aec2-57b9d21b2c30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\UI\KeyboardIcons">
+      <UniqueIdentifier>{511316e6-91f1-4fa5-85dd-13d22a65729a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\UI\Skills\Fire">
+      <UniqueIdentifier>{a4f57e73-62cb-4638-9eb9-c51df2e795e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\UI\Skills\Stone">
+      <UniqueIdentifier>{27cc4392-3503-4cc3-8338-922212bf4752}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\AttackInterfaces">
+      <UniqueIdentifier>{7279eda4-cf10-4990-9415-6c33855a1963}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\UI\Skills\Transform">
+      <UniqueIdentifier>{e4856ff7-d065-4f7f-8dcd-03c49f2e0fa2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\Attacks\Transform">
+      <UniqueIdentifier>{530ab13b-e616-4530-a815-e4c58f3a2013}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\Ailments\Stone">
+      <UniqueIdentifier>{6c1e8100-d950-4640-85f6-205614154a55}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -97,9 +121,6 @@
     <ClInclude Include="Attack.h">
       <Filter>Common\Attack</Filter>
     </ClInclude>
-    <ClInclude Include="AttackInterface.h">
-      <Filter>Common\Attack</Filter>
-    </ClInclude>
     <ClInclude Include="Ailment.h">
       <Filter>Common\Texture2D</Filter>
     </ClInclude>
@@ -114,6 +135,24 @@
     </ClInclude>
     <ClInclude Include="SkillUI.h">
       <Filter>Common\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="AttackStone.h">
+      <Filter>Common\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="AttackInterface.h">
+      <Filter>Common\AttackInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="AttackInterfaceFire.h">
+      <Filter>Common\AttackInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="AttackInterfaceStone.h">
+      <Filter>Common\AttackInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="AttackTransform.h">
+      <Filter>Common\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="AttackInterfaceTransform.h">
+      <Filter>Common\AttackInterfaces</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -130,9 +169,6 @@
       <Filter>Common\Texture2D</Filter>
     </ClCompile>
     <ClCompile Include="Attack.cpp">
-      <Filter>Common\Attack</Filter>
-    </ClCompile>
-    <ClCompile Include="AttackInterface.cpp">
       <Filter>Common\Attack</Filter>
     </ClCompile>
     <ClCompile Include="Ailment.cpp">
@@ -155,6 +191,24 @@
     </ClCompile>
     <ClCompile Include="SkillUI.cpp">
       <Filter>Common\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="AttackStone.cpp">
+      <Filter>Common\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="AttackInterface.cpp">
+      <Filter>Common\AttackInterfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="AttackInterfaceFire.cpp">
+      <Filter>Common\AttackInterfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="AttackInterfaceStone.cpp">
+      <Filter>Common\AttackInterfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="AttackTransform.cpp">
+      <Filter>Common\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="AttackInterfaceTransform.cpp">
+      <Filter>Common\AttackInterfaces</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -262,6 +316,54 @@
     </Image>
     <Image Include="..\Assets\Grounds\groundText.dds">
       <Filter>Assets\Grounds</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Stone\00.dds">
+      <Filter>Assets\Attacks\Stone</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Stone\01.dds">
+      <Filter>Assets\Attacks\Stone</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Stone\02.dds">
+      <Filter>Assets\Attacks\Stone</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Stone\03.dds">
+      <Filter>Assets\Attacks\Stone</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Stone\04.dds">
+      <Filter>Assets\Attacks\Stone</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Stone\05.dds">
+      <Filter>Assets\Attacks\Stone</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Stone\06.dds">
+      <Filter>Assets\Attacks\Stone</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Stone\07.dds">
+      <Filter>Assets\Attacks\Stone</Filter>
+    </Image>
+    <Image Include="..\Assets\UI\KeyboardIcons\c.dds">
+      <Filter>Assets\UI\KeyboardIcons</Filter>
+    </Image>
+    <Image Include="..\Assets\UI\KeyboardIcons\x.dds">
+      <Filter>Assets\UI\KeyboardIcons</Filter>
+    </Image>
+    <Image Include="..\Assets\UI\Skills\Fire\fire.dds">
+      <Filter>Assets\UI\Skills\Fire</Filter>
+    </Image>
+    <Image Include="..\Assets\UI\Skills\Stone\stone.dds">
+      <Filter>Assets\UI\Skills\Stone</Filter>
+    </Image>
+    <Image Include="..\Assets\UI\KeyboardIcons\s.dds">
+      <Filter>Assets\UI\KeyboardIcons</Filter>
+    </Image>
+    <Image Include="..\Assets\UI\Skills\Transform\0.dds">
+      <Filter>Assets\UI\Skills\Transform</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Transform\0.dds">
+      <Filter>Assets\Attacks\Transform</Filter>
+    </Image>
+    <Image Include="..\Assets\Ailments\Stone\stone.dds">
+      <Filter>Assets\Ailments\Stone</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

@@ -14,7 +14,8 @@
 #include "Protagonist.h"
 #include "AttackFire.h"
 #include "AttackFlame.h"
-#include "AttackInterface.h"
+#include "AttackStone.h"
+#include "AttackInterfaceFire.h"
 #include "Enemy.h"
 
 
@@ -94,15 +95,22 @@ private:
     Texture2D                                   m_groundText;
 
     //    UI
-    SkillUI                                     m_skillUI;
+    SkillUI                                     m_skillUIFire;
+    SkillUI                                     m_skillUIStone;
+    SkillUI                                     m_skillUITransform;
 
     //    Protagonist
     Protagonist                                 m_protagonist;
 
     //    Attacks
-    AttackInterface                             m_attackInterface;
-    AttackFire                                  m_fireAttack;
-    AttackFlame                                 m_flameAttack;
+    AttackInterfaceFire                         m_attackInterfaceFire;
+    AttackInterfaceStone                        m_attackInterfaceStone;
+    AttackInterfaceTransform                    m_attackInterfaceTransform;
+
+    AttackFire                                  m_attackFire;
+    AttackFlame                                 m_attackFlame;
+    AttackStone                                 m_attackStone;
+    AttackTransform                             m_attackTransform;
 
     //    Enemy
     Enemy                                       m_enemy;

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "SkillUI.h"
 
-void SkillUI::loadFireTexture(const wchar_t* fireTexturePath, const wchar_t* fireKeyboardTexturePath,
+void SkillUI::loadTexture(const wchar_t* fireTexturePath, const wchar_t* fireKeyboardTexturePath,
 	ID3D12Device* device,
 	DirectX::ResourceUploadBatch& resourceUpload,
 	std::unique_ptr<DirectX::DescriptorHeap>& m_resourceDescriptors,
@@ -10,52 +10,52 @@ void SkillUI::loadFireTexture(const wchar_t* fireTexturePath, const wchar_t* fir
 {
 	// Skill UI
 	DX::ThrowIfFailed(
-		CreateDDSTextureFromFile(device, resourceUpload, fireTexturePath, fireTexture.ReleaseAndGetAddressOf()));
+		CreateDDSTextureFromFile(device, resourceUpload, fireTexturePath, texture.ReleaseAndGetAddressOf()));
 
-	fireDescriptorMap = pushToHeap(m_descriptorStatuses);
+	descriptorMap = pushToHeap(m_descriptorStatuses);
 
-	DirectX::CreateShaderResourceView(device, fireTexture.Get(),
-		m_resourceDescriptors->GetCpuHandle(fireDescriptorMap));
+	DirectX::CreateShaderResourceView(device, texture.Get(),
+		m_resourceDescriptors->GetCpuHandle(descriptorMap));
 
-	fireTextureResolution = fireResolution;
+	textureResolution = fireResolution;
 
 	// Keyboard UI
 	DX::ThrowIfFailed(
 		CreateDDSTextureFromFile(device, resourceUpload, fireKeyboardTexturePath,
-			fireKeyboardTexture.ReleaseAndGetAddressOf())
+			keyboardTexture.ReleaseAndGetAddressOf())
 	);
 
-	fireKeyboardDescriptorMap = pushToHeap(m_descriptorStatuses);
+	keyboardDescriptorMap = pushToHeap(m_descriptorStatuses);
 
-	DirectX::CreateShaderResourceView(device, fireKeyboardTexture.Get(),
-		m_resourceDescriptors->GetCpuHandle(fireKeyboardDescriptorMap));
+	DirectX::CreateShaderResourceView(device, keyboardTexture.Get(),
+		m_resourceDescriptors->GetCpuHandle(keyboardDescriptorMap));
 
-	fireKeyboardTextureResolution = fireKeyboardResolution;
+	keyboardTextureResolution = fireKeyboardResolution;
 }
 
-void SkillUI::setFireDefaultScaling(RECT fullscreenRect)
+void SkillUI::setDefaultScaling(RECT fullscreenRect)
 {
 	// Skill UI
-	fireDefaultScaling = static_cast<float>(fullscreenRect.right - fullscreenRect.left) / fireTextureResolution.x;
-	DirectX::XMUINT2 fireOriginalSize = DirectX::GetTextureSize(fireTexture.Get());
-	fireSize.x = fireOriginalSize.x * fireDefaultScaling / (fullscreenRect.right);
-	fireSize.y = fireOriginalSize.y * fireDefaultScaling / (fullscreenRect.bottom);
+	defaultScaling = static_cast<float>(fullscreenRect.right - fullscreenRect.left) / textureResolution.x;
+	DirectX::XMUINT2 fireOriginalSize = DirectX::GetTextureSize(texture.Get());
+	size.x = fireOriginalSize.x * defaultScaling / (fullscreenRect.right);
+	size.y = fireOriginalSize.y * defaultScaling / (fullscreenRect.bottom);
 
 	// Keyboard UI
-	fireKeyboardDefaultScaling = static_cast<float>(fullscreenRect.right - fullscreenRect.left)
+	keyboardDefaultScaling = static_cast<float>(fullscreenRect.right - fullscreenRect.left)
 		/ 
-		fireKeyboardTextureResolution.x;
-	DirectX::XMUINT2 fireKeyboardOriginalSize = DirectX::GetTextureSize(fireKeyboardTexture.Get());
-	fireKeyboardSize.x = fireKeyboardOriginalSize.x * fireKeyboardDefaultScaling / (fullscreenRect.right);
-	fireKeyboardSize.y = fireKeyboardOriginalSize.y * fireKeyboardDefaultScaling / (fullscreenRect.bottom);
+		keyboardTextureResolution.x;
+	DirectX::XMUINT2 fireKeyboardOriginalSize = DirectX::GetTextureSize(keyboardTexture.Get());
+	keyboardSize.x = fireKeyboardOriginalSize.x * keyboardDefaultScaling / (fullscreenRect.right);
+	keyboardSize.y = fireKeyboardOriginalSize.y * keyboardDefaultScaling / (fullscreenRect.bottom);
 }
 
-void SkillUI::setFirePosition(DirectX::XMFLOAT2 _firePosition)
+void SkillUI::setPosition(DirectX::XMFLOAT2 _firePosition)
 {
-	firePosition = _firePosition;
+	position = _firePosition;
 
-	fireKeyboardPosition.x = _firePosition.x + fireSize.x - 0.5f * fireKeyboardSize.x;
-	fireKeyboardPosition.y = _firePosition.y + 0.8f * fireSize.y;
+	keyboardPosition.x = _firePosition.x + size.x - 0.55f * keyboardSize.x;
+	keyboardPosition.y = _firePosition.y + 0.75f * size.y;
 }
 
 void SkillUI::setAttackInterface(AttackInterface* _attackInterface)
@@ -66,14 +66,14 @@ void SkillUI::setAttackInterface(AttackInterface* _attackInterface)
 
 void SkillUI::update()
 {
-	if (attackInterface->getIsFireCoolingDown()) {
-		float fireCooledDownPercentage = attackInterface->getFireCoolDownPassedTime() / attackInterface->getFireCoolDownTime();
-		fireSourceRect.top = 0;
-		fireSourceRect.left = 0;
-		fireSourceRect.bottom = static_cast<unsigned int>(
-				DirectX::GetTextureSize(fireTexture.Get()).y * (1 - fireCooledDownPercentage)
+	if (attackInterface->getIsCoolingDown()) {
+		float fireCooledDownPercentage = attackInterface->getCoolDownPassedTime() / attackInterface->getCoolDownTime();
+		sourceRect.top = 0;
+		sourceRect.left = 0;
+		sourceRect.bottom = static_cast<unsigned int>(
+				DirectX::GetTextureSize(texture.Get()).y * (1 - fireCooledDownPercentage)
 			);
-		fireSourceRect.right = DirectX::GetTextureSize(fireTexture.Get()).x;
+		sourceRect.right = DirectX::GetTextureSize(texture.Get()).x;
 	}
 }
 
@@ -81,33 +81,33 @@ void SkillUI::draw(std::unique_ptr<DirectX::SpriteBatch>& m_spriteBatch,
 	std::unique_ptr<DirectX::DescriptorHeap>& m_resourceDescriptors,
 	RECT fullscreenRect)
 {
-	m_spriteBatch->Draw(m_resourceDescriptors->GetGpuHandle(fireDescriptorMap),
-		DirectX::GetTextureSize(fireTexture.Get()),
-		DirectX::XMFLOAT2(firePosition.x * fullscreenRect.right, firePosition.y * fullscreenRect.bottom),
+	m_spriteBatch->Draw(m_resourceDescriptors->GetGpuHandle(descriptorMap),
+		DirectX::GetTextureSize(texture.Get()),
+		DirectX::XMFLOAT2(position.x * fullscreenRect.right, position.y * fullscreenRect.bottom),
 		nullptr, DirectX::Colors::White, 0.f, DirectX::XMFLOAT2(0, 0),
-		fireDefaultScaling);
+		defaultScaling);
 
-	if (attackInterface->getIsFireCoolingDown()) {
-		m_spriteBatch->Draw(m_resourceDescriptors->GetGpuHandle(fireDescriptorMap),
-			DirectX::GetTextureSize(fireTexture.Get()),
-			DirectX::XMFLOAT2(firePosition.x * fullscreenRect.right, firePosition.y * fullscreenRect.bottom),
-			&fireSourceRect, DirectX::Colors::LightGray, 0.f, DirectX::XMFLOAT2(0, 0),
-			fireDefaultScaling);
+	if (attackInterface->getIsCoolingDown()) {
+		m_spriteBatch->Draw(m_resourceDescriptors->GetGpuHandle(descriptorMap),
+			DirectX::GetTextureSize(texture.Get()),
+			DirectX::XMFLOAT2(position.x * fullscreenRect.right, position.y * fullscreenRect.bottom),
+			&sourceRect, DirectX::Colors::LightGray, 0.f, DirectX::XMFLOAT2(0, 0),
+			defaultScaling);
 	}
 
-	m_spriteBatch->Draw(m_resourceDescriptors->GetGpuHandle(fireKeyboardDescriptorMap),
-		DirectX::GetTextureSize(fireKeyboardTexture.Get()),
-		DirectX::XMFLOAT2(fireKeyboardPosition.x * fullscreenRect.right, fireKeyboardPosition.y * fullscreenRect.bottom),
+	m_spriteBatch->Draw(m_resourceDescriptors->GetGpuHandle(keyboardDescriptorMap),
+		DirectX::GetTextureSize(keyboardTexture.Get()),
+		DirectX::XMFLOAT2(keyboardPosition.x * fullscreenRect.right, keyboardPosition.y * fullscreenRect.bottom),
 		nullptr, DirectX::Colors::White, 0.f, DirectX::XMFLOAT2(0, 0),
-		fireKeyboardDefaultScaling);
+		keyboardDefaultScaling);
 }
 
 void SkillUI::reset(std::vector<bool>& m_descriptorStatuses)
 {
-	fireTexture.Reset();
-	m_descriptorStatuses[fireDescriptorMap] = false;
-	fireKeyboardTexture.Reset();
-	m_descriptorStatuses[fireKeyboardDescriptorMap] = false;
+	texture.Reset();
+	m_descriptorStatuses[descriptorMap] = false;
+	keyboardTexture.Reset();
+	m_descriptorStatuses[keyboardDescriptorMap] = false;
 }
 
 int SkillUI::pushToHeap(std::vector<bool>& m_descriptorStatuses, int startIdx)

@@ -2,7 +2,7 @@
 
 #include "Attack.h"
 
-class AttackFlame : public Attack
+class AttackTransform : public Attack
 {
 public:
 	unsigned short getType();

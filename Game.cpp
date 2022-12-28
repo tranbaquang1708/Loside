@@ -93,12 +93,19 @@ void Game::Update(DX::StepTimer const& timer)
     m_enemy.update(elapsedTime, m_protagonist.getPosition().x);
 
     // Attack
-    m_attackInterface.update(elapsedTime);
-    m_fireAttack.update(elapsedTime);
-    m_flameAttack.update(elapsedTime);
+    m_attackInterfaceFire.update(elapsedTime);
+    m_attackInterfaceStone.update(elapsedTime);
+    m_attackInterfaceTransform.update(elapsedTime);
+
+    m_attackFire.update(elapsedTime);
+    m_attackFlame.update(elapsedTime);
+    m_attackStone.update(elapsedTime);
+    m_attackTransform.update(elapsedTime);
 
     // UI
-    m_skillUI.update();
+    m_skillUIFire.update();
+    m_skillUIStone.update();
+    m_skillUITransform.update();
 
     // END TODO
     elapsedTime;
@@ -150,11 +157,15 @@ void Game::Render()
     }
 
     //    Attack
-    m_fireAttack.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
-    m_flameAttack.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
+    m_attackFire.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
+    m_attackFlame.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
+    m_attackStone.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
+    m_attackTransform.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
 
     //    UI
-    m_skillUI.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
+    m_skillUIFire.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
+    m_skillUIStone.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
+    m_skillUITransform.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
 
     m_spriteBatch->End();
     
@@ -316,30 +327,56 @@ void Game::CreateDeviceDependentResources()
     m_enemy.setAilment(Ailment::None);
 
     //      Attacks
-    m_fireAttack.loadAnimation(L"../Assets/Attacks/Fire", device, resourceUpload, m_resourceDescriptors,
+    m_attackFire.loadAnimation(L"../Assets/Attacks/Fire", device, resourceUpload, m_resourceDescriptors,
         m_descriptorStatuses, XMUINT2(3840, 2160), 0, .3f);
 
-    m_flameAttack.loadAnimation(L"../Assets/Attacks/Flame", device, resourceUpload, m_resourceDescriptors,
+    m_attackFlame.loadAnimation(L"../Assets/Attacks/Flame", device, resourceUpload, m_resourceDescriptors,
         m_descriptorStatuses, XMUINT2(3840, 2160), 0.025f);
 
-    m_attackInterface.loadAttacks(&m_fireAttack, &m_flameAttack);
-    // MYTODO: Move hard-coded values to config file
-    m_attackInterface.setFireCoolDownTime(.8f);
-    m_protagonist.loadAttackInterface(&m_attackInterface);
+    m_attackStone.loadAnimation(L"../Assets/Attacks/Stone", device, resourceUpload, m_resourceDescriptors,
+        m_descriptorStatuses, XMUINT2(3840, 2160), 1/18.f);
+
+    m_attackTransform.loadAnimation(L"../Assets/Attacks/Transform", device, resourceUpload, m_resourceDescriptors,
+        m_descriptorStatuses, XMUINT2(3840, 2160), 0, .3f);
+
+    m_attackInterfaceFire.loadAttack(&m_attackFire, &m_attackFlame);
+    m_attackInterfaceFire.setCoolDownTime(.8f);
+
+    m_attackInterfaceStone.loadAttack(&m_attackStone);
+    m_attackInterfaceStone.setCoolDownTime(.8f);
+
+    m_attackInterfaceTransform.loadAttack(&m_attackTransform);
+    m_attackInterfaceTransform.setCoolDownTime(.8f);
+
+    m_protagonist.loadAttackInterface(&m_attackInterfaceFire, &m_attackInterfaceStone, &m_attackInterfaceTransform);
 
     //    Ailment
     //      Fire
-    Ailment tempAilment;
-
-    tempAilment.loadTexture(L"../Assets/Ailments/Fire/fire.dds", device, resourceUpload, m_resourceDescriptors,
+    Ailment ailmentFire;
+    ailmentFire.loadTexture(L"../Assets/Ailments/Fire/fire.dds", device, resourceUpload, m_resourceDescriptors,
         m_descriptorStatuses, XMUINT2(3840, 2160));
-    m_ailments.insert({ Ailment::Fire, tempAilment });
+    m_ailments.insert({ Ailment::Fire, ailmentFire });
+
+    Ailment ailmentStone;
+    ailmentStone.loadTexture(L"../Assets/Ailments/Stone/stone.dds", device, resourceUpload, m_resourceDescriptors,
+        m_descriptorStatuses, XMUINT2(3840, 2160));
+    m_ailments.insert({ Ailment::Stone, ailmentStone });
 
     //    UI
-    m_skillUI.loadFireTexture(L"../Assets/UI/Skills/Fire/fire.dds", L"../Assets/UI/KeyboardIcons/x.dds",
+    m_skillUIFire.loadTexture(L"../Assets/UI/Skills/Fire/fire.dds", L"../Assets/UI/KeyboardIcons/x.dds",
         device, resourceUpload, m_resourceDescriptors,
         m_descriptorStatuses, XMUINT2(3840, 2160), XMUINT2(3840, 2160));
-    m_skillUI.setAttackInterface(&m_attackInterface);
+    m_skillUIFire.setAttackInterface(&m_attackInterfaceFire);
+
+    m_skillUIStone.loadTexture(L"../Assets/UI/Skills/Stone/stone.dds", L"../Assets/UI/KeyboardIcons/c.dds",
+        device, resourceUpload, m_resourceDescriptors,
+        m_descriptorStatuses, XMUINT2(3840, 2160), XMUINT2(3840, 2160));
+    m_skillUIStone.setAttackInterface(&m_attackInterfaceStone);
+
+    m_skillUITransform.loadTexture(L"../Assets/UI/Skills/Transform/0.dds", L"../Assets/UI/KeyboardIcons/s.dds",
+        device, resourceUpload, m_resourceDescriptors,
+        m_descriptorStatuses, XMUINT2(3840, 2160), XMUINT2(3840, 2160));
+    m_skillUITransform.setAttackInterface(&m_attackInterfaceTransform);
 
     auto uploadResourcesFinished = resourceUpload.End(
         m_deviceResources->GetCommandQueue());
@@ -394,9 +431,10 @@ void Game::CreateWindowSizeDependentResources()
     );
 
     //    Attack
-    m_fireAttack.setDefaultScaling(m_fullscreenRect);
-
-    m_flameAttack.setDefaultScaling(m_fullscreenRect);
+    m_attackFire.setDefaultScaling(m_fullscreenRect);
+    m_attackFlame.setDefaultScaling(m_fullscreenRect);
+    m_attackStone.setDefaultScaling(m_fullscreenRect);
+    m_attackTransform.setDefaultScaling(m_fullscreenRect);
 
     //    Ailment
     for (auto& a : m_ailments) {
@@ -404,8 +442,14 @@ void Game::CreateWindowSizeDependentResources()
     }
 
     //   UI
-    m_skillUI.setFireDefaultScaling(m_fullscreenRect);
-    m_skillUI.setFirePosition(XMFLOAT2(0.9f, 0.92f));
+    m_skillUIFire.setDefaultScaling(m_fullscreenRect);
+    m_skillUIFire.setPosition(XMFLOAT2(0.9f, 0.92f));
+
+    m_skillUIStone.setDefaultScaling(m_fullscreenRect);
+    m_skillUIStone.setPosition(XMFLOAT2(0.938f, 0.883f));
+
+    m_skillUITransform.setDefaultScaling(m_fullscreenRect);
+    m_skillUITransform.setPosition(XMFLOAT2(0.855f, 0.883f));
 }
 
 void Game::OnDeviceLost()
@@ -426,8 +470,10 @@ void Game::OnDeviceLost()
     m_protagonist.reset(m_descriptorStatuses);
     
     // Attack
-    m_fireAttack.reset(m_descriptorStatuses);
-    m_flameAttack.reset(m_descriptorStatuses);
+    m_attackFire.reset(m_descriptorStatuses);
+    m_attackFlame.reset(m_descriptorStatuses);
+    m_attackStone.reset(m_descriptorStatuses);
+    m_attackTransform.reset(m_descriptorStatuses);
     
     // Enemy
     m_enemy.reset(m_descriptorStatuses);
@@ -436,6 +482,11 @@ void Game::OnDeviceLost()
     for (auto& a : m_ailments) {
         a.second.reset(m_descriptorStatuses);
     }
+
+    // UI
+    m_skillUIFire.reset(m_descriptorStatuses);
+    m_skillUIStone.reset(m_descriptorStatuses);
+    m_skillUITransform.reset(m_descriptorStatuses);
 
     // END TODO
     // If using the DirectX Tool Kit for DX12, uncomment this line:

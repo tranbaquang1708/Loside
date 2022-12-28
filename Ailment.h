@@ -6,6 +6,7 @@ public:
 	{
 		None,
 		Fire,
+		Stone
 	};
 
 	void loadTexture(const wchar_t* texturePath, ID3D12Device* device,
