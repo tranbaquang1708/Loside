@@ -11,7 +11,8 @@ public:
 	enum Type : unsigned short
 	{
 		Fire,
-		Flame
+		Flame,
+		Stone
 	};
 
 	virtual unsigned short getType() = 0;
@@ -30,7 +31,7 @@ public:
 	void draw(std::unique_ptr<DirectX::SpriteBatch>& m_spriteBatch,
 		std::unique_ptr<DirectX::DescriptorHeap>& m_resourceDescriptors,
 		RECT fullscreenRect);
-	void update(float elapsedTime);
+	virtual void update(float elapsedTime);
 	void reset(std::vector<bool>& m_descriptorStatuses);
 
 	void attack(DirectX::XMFLOAT2 inPosition);

@@ -205,7 +205,7 @@ void Enemy::playPushedBackAnimation(float elapsedTime)
 	}
 
 	if (currentPositionIdx == pushedBackTrajectory.size() - 1) {
-		currentAttackedState = None;
+		getAttacked(0.1f);
 	}
 }
 
@@ -222,6 +222,7 @@ void Enemy::getPushedBack(float displacement, float duration)
 	originalPosition.x += displacement;
 	pushedBackTime = duration;
 	attackedOriginalPosition = position;
+	attackedAnimationPlayedTime = 0;
 
 	if (displacement > 0) {
 		currentAttackedState = PushedBackRight;
@@ -236,7 +237,6 @@ void Enemy::getPushedBack(float displacement, float duration)
 	std::transform(pushedBackXTrajectory.begin(), pushedBackXTrajectory.end(), back_inserter(pushedBackTrajectory),
 		[this](float const& x) { return DirectX::XMFLOAT2(x, position.y); });
 }
-
 
 int Enemy::pushToHeap(std::vector<bool>& m_descriptorStatuses, int startIdx)
 {

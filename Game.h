@@ -14,6 +14,7 @@
 #include "Protagonist.h"
 #include "AttackFire.h"
 #include "AttackFlame.h"
+#include "AttackStone.h"
 #include "AttackInterface.h"
 #include "Enemy.h"
 
@@ -103,6 +104,7 @@ private:
     AttackInterface                             m_attackInterface;
     AttackFire                                  m_fireAttack;
     AttackFlame                                 m_flameAttack;
+    AttackStone                                 m_stoneAttack;
 
     //    Enemy
     Enemy                                       m_enemy;

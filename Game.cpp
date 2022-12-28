@@ -96,6 +96,7 @@ void Game::Update(DX::StepTimer const& timer)
     m_attackInterface.update(elapsedTime);
     m_fireAttack.update(elapsedTime);
     m_flameAttack.update(elapsedTime);
+    m_stoneAttack.update(elapsedTime);
 
     // UI
     m_skillUI.update();
@@ -152,6 +153,7 @@ void Game::Render()
     //    Attack
     m_fireAttack.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
     m_flameAttack.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
+    m_stoneAttack.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
 
     //    UI
     m_skillUI.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
@@ -322,18 +324,26 @@ void Game::CreateDeviceDependentResources()
     m_flameAttack.loadAnimation(L"../Assets/Attacks/Flame", device, resourceUpload, m_resourceDescriptors,
         m_descriptorStatuses, XMUINT2(3840, 2160), 0.025f);
 
-    m_attackInterface.loadAttacks(&m_fireAttack, &m_flameAttack);
+    m_stoneAttack.loadAnimation(L"../Assets/Attacks/Stone", device, resourceUpload, m_resourceDescriptors,
+        m_descriptorStatuses, XMUINT2(3840, 2160), 1/18.f);
+
+    m_attackInterface.loadAttacks(&m_fireAttack, &m_flameAttack, &m_stoneAttack);
     // MYTODO: Move hard-coded values to config file
     m_attackInterface.setFireCoolDownTime(.8f);
+    m_attackInterface.setStoneCoolDownTime(.8f);
     m_protagonist.loadAttackInterface(&m_attackInterface);
 
     //    Ailment
     //      Fire
-    Ailment tempAilment;
-
-    tempAilment.loadTexture(L"../Assets/Ailments/Fire/fire.dds", device, resourceUpload, m_resourceDescriptors,
+    Ailment ailmentFire;
+    ailmentFire.loadTexture(L"../Assets/Ailments/Fire/fire.dds", device, resourceUpload, m_resourceDescriptors,
         m_descriptorStatuses, XMUINT2(3840, 2160));
-    m_ailments.insert({ Ailment::Fire, tempAilment });
+    m_ailments.insert({ Ailment::Fire, ailmentFire });
+
+    Ailment ailmentStone;
+    ailmentStone.loadTexture(L"../Assets/Ailments/Stone/stone.dds", device, resourceUpload, m_resourceDescriptors,
+        m_descriptorStatuses, XMUINT2(3840, 2160));
+    m_ailments.insert({ Ailment::Stone, ailmentStone });
 
     //    UI
     m_skillUI.loadFireTexture(L"../Assets/UI/Skills/Fire/fire.dds", L"../Assets/UI/KeyboardIcons/x.dds",
@@ -395,8 +405,8 @@ void Game::CreateWindowSizeDependentResources()
 
     //    Attack
     m_fireAttack.setDefaultScaling(m_fullscreenRect);
-
     m_flameAttack.setDefaultScaling(m_fullscreenRect);
+    m_stoneAttack.setDefaultScaling(m_fullscreenRect);
 
     //    Ailment
     for (auto& a : m_ailments) {
@@ -428,6 +438,7 @@ void Game::OnDeviceLost()
     // Attack
     m_fireAttack.reset(m_descriptorStatuses);
     m_flameAttack.reset(m_descriptorStatuses);
+    m_stoneAttack.reset(m_descriptorStatuses);
     
     // Enemy
     m_enemy.reset(m_descriptorStatuses);

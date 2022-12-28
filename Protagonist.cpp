@@ -151,6 +151,12 @@ void Protagonist::handleInput(DirectX::Keyboard::State keyboardInput, DirectX::K
 			attackInterface->attackFire(targetingEnemy);
 		}
 	}
+
+	if (keyboardTracker.pressed.C) { // C for stone
+		if (targetingEnemy != nullptr) {
+			attackInterface->attackStone(targetingEnemy, position.x);
+		}
+	}
 }
 
 int Protagonist::pushToHeap(std::vector<bool>& m_descriptorStatuses, int startIdx)

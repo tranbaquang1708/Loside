@@ -80,17 +80,17 @@ void Attack::draw(std::unique_ptr<DirectX::SpriteBatch>& m_spriteBatch,
 {
 	if (!isOn) return;
 
+	m_spriteBatch->Draw(m_resourceDescriptors->GetGpuHandle(descriptorMap.find(currentFrameIdx)->second),
+		DirectX::GetTextureSize(this->frames[currentFrameIdx].Get()),
+		DirectX::XMFLOAT2(position.x * fullscreenRect.right, position.y * fullscreenRect.bottom),
+		nullptr, DirectX::Colors::White, 0.f, origin, defaultScaling);
+
 	if (currentFrameIdx < frames.size() - 1) {
 		m_spriteBatch->Draw(m_resourceDescriptors->GetGpuHandle(descriptorMap.find(currentFrameIdx + 1)->second),
 			DirectX::GetTextureSize(this->frames[currentFrameIdx + 1].Get()),
 			DirectX::XMFLOAT2(position.x * fullscreenRect.right, position.y * fullscreenRect.bottom),
 			nullptr, DirectX::Colors::White * 0.05f, 0.f, origin, defaultScaling);
 	}
-
-	m_spriteBatch->Draw(m_resourceDescriptors->GetGpuHandle(descriptorMap.find(currentFrameIdx)->second),
-		DirectX::GetTextureSize(this->frames[currentFrameIdx].Get()),
-		DirectX::XMFLOAT2(position.x * fullscreenRect.right, position.y * fullscreenRect.bottom),
-		nullptr, DirectX::Colors::White, 0.f, origin, defaultScaling);
 }
 
 void Attack::update(float elapsedTime)

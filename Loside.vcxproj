@@ -220,6 +220,7 @@
     <ClInclude Include="SkillUI.h" />
     <ClInclude Include="StepTimer.h" />
     <ClInclude Include="DeviceResources.h" />
+    <ClInclude Include="AttackStone.h" />
     <ClInclude Include="Texture2D.h" />
   </ItemGroup>
   <ItemGroup>
@@ -229,6 +230,7 @@
     <ClCompile Include="AttackFlame.cpp" />
     <ClCompile Include="AttackInterface.cpp" />
     <ClCompile Include="Attack.cpp" />
+    <ClCompile Include="AttackStone.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -274,6 +276,14 @@
     <Image Include="..\Assets\Attacks\Flame\21.dds" />
     <Image Include="..\Assets\Attacks\Flame\22.dds" />
     <Image Include="..\Assets\Attacks\Flame\23.dds" />
+    <Image Include="..\Assets\Attacks\Stone\00.dds" />
+    <Image Include="..\Assets\Attacks\Stone\01.dds" />
+    <Image Include="..\Assets\Attacks\Stone\02.dds" />
+    <Image Include="..\Assets\Attacks\Stone\03.dds" />
+    <Image Include="..\Assets\Attacks\Stone\04.dds" />
+    <Image Include="..\Assets\Attacks\Stone\05.dds" />
+    <Image Include="..\Assets\Attacks\Stone\06.dds" />
+    <Image Include="..\Assets\Attacks\Stone\07.dds" />
     <Image Include="..\Assets\Backgrounds\Animations\BackgroundText\0.dds" />
     <Image Include="..\Assets\Backgrounds\Animations\BackgroundText\1.dds" />
     <Image Include="..\Assets\Backgrounds\white.dds" />
@@ -281,6 +291,10 @@
     <Image Include="..\Assets\Grounds\ground.dds" />
     <Image Include="..\Assets\Grounds\groundText.dds" />
     <Image Include="..\Assets\Protagonists\protagonist.dds" />
+    <Image Include="..\Assets\UI\KeyboardIcons\c.dds" />
+    <Image Include="..\Assets\UI\KeyboardIcons\x.dds" />
+    <Image Include="..\Assets\UI\Skills\Fire\fire.dds" />
+    <Image Include="..\Assets\UI\Skills\Stone\stone.dds" />
     <Image Include="directx.ico" />
   </ItemGroup>
   <ItemGroup>
