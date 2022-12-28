@@ -1,7 +1,9 @@
 #pragma once
 
 #include "Enemy.h"
-#include "AttackInterface.h"
+#include "AttackInterfaceFire.h"
+#include "AttackInterfaceStone.h"
+#include "AttackInterfaceTransform.h"
 
 class Protagonist
 {
@@ -12,7 +14,9 @@ public:
 		std::vector<bool>& m_descriptorStatuses, DirectX::XMUINT2 resolution);
 
 	void loadWalkAnimation(std::vector<DirectX::XMFLOAT2> sampledTrajectory, float time);
-	void loadAttackInterface(AttackInterface* inAttackInterface);
+	void loadAttackInterface(AttackInterfaceFire* _attackInterfaceFire,
+		AttackInterfaceStone* _attackInterfaceStone,
+		AttackInterfaceTransform* _attackInterfaceTransform);
 
 	void setDefaultScaling(RECT fullscreenRect);
 	void setPosition(DirectX::XMFLOAT2 arg_position);
@@ -61,5 +65,7 @@ private:
 
 	Enemy*									targetingEnemy;
 
-	AttackInterface*						attackInterface;
+	AttackInterfaceFire*					attackInterfaceFire;
+	AttackInterfaceStone*					attackInterfaceStone;
+	AttackInterfaceTransform*				attackInterfaceTransform;
 };

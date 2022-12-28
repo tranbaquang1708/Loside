@@ -6,6 +6,7 @@
 
 class AttackStone : public Attack
 {
+public:
 	unsigned short getType();
 	unsigned short getAilment();
 };

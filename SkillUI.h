@@ -6,15 +6,15 @@
 class SkillUI
 {
 public:
-	void loadFireTexture(const wchar_t* fireTexturePath, const wchar_t* fireKeyboardTexturePath,
+	void loadTexture(const wchar_t* fireTexturePath, const wchar_t* fireKeyboardTexturePath,
 		ID3D12Device* device,
 		DirectX::ResourceUploadBatch& resourceUpload,
 		std::unique_ptr<DirectX::DescriptorHeap>& m_resourceDescriptors,
 		std::vector<bool>& m_descriptorStatuses,
 		DirectX::XMUINT2 fireResolution, DirectX::XMUINT2 fireKeyboardResolution);
 
-	void setFireDefaultScaling(RECT fullscreenRect);
-	void setFirePosition(DirectX::XMFLOAT2 _fireposition);
+	void setDefaultScaling(RECT fullscreenRect);
+	void setPosition(DirectX::XMFLOAT2 _fireposition);
 	
 	void setAttackInterface(AttackInterface* _attackInterface);
 
@@ -27,23 +27,23 @@ public:
 private:
 	int pushToHeap(std::vector<bool>& m_descriptorStatuses, int startIdx = 0);
 
-	Microsoft::WRL::ComPtr<ID3D12Resource>	fireTexture;
-	DirectX::XMUINT2						fireTextureResolution;
-	float									fireDefaultScaling;
-	DirectX::XMFLOAT2						fireSize;
+	Microsoft::WRL::ComPtr<ID3D12Resource>	texture;
+	DirectX::XMUINT2						textureResolution;
+	float									defaultScaling;
+	DirectX::XMFLOAT2						size;
 
-	DirectX::XMFLOAT2						firePosition;
-	RECT									fireSourceRect;
+	DirectX::XMFLOAT2						position;
+	RECT									sourceRect;
 
-	Microsoft::WRL::ComPtr<ID3D12Resource>	fireKeyboardTexture;
-	DirectX::XMUINT2						fireKeyboardTextureResolution;
-	float									fireKeyboardDefaultScaling;
-	DirectX::XMFLOAT2						fireKeyboardSize;
+	Microsoft::WRL::ComPtr<ID3D12Resource>	keyboardTexture;
+	DirectX::XMUINT2						keyboardTextureResolution;
+	float									keyboardDefaultScaling;
+	DirectX::XMFLOAT2						keyboardSize;
 
-	DirectX::XMFLOAT2						fireKeyboardPosition;
+	DirectX::XMFLOAT2						keyboardPosition;
 
-	int										fireDescriptorMap;
-	int										fireKeyboardDescriptorMap;
+	int										descriptorMap;
+	int										keyboardDescriptorMap;
 
 	AttackInterface*						attackInterface;
 };

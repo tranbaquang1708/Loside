@@ -4,33 +4,38 @@
 
 class AttackInterface {
 public:
-	void loadAttacks(Attack* inFireAttack, Attack* flameAttack, Attack* stoneAttack);
+	//void loadAttacks(Attack* inFireAttack, Attack* flameAttack, Attack* stoneAttack);
 
-	void setFireCoolDownTime(float _fireCoolDownTime);
-	void setStoneCoolDownTime(float _coolDownTime);
+	void setCoolDownTime(float _coolDownTime);
+	//void setStoneCoolDownTime(float _coolDownTime);
 
-	float getFireCoolDownTime();
-	float getFireCoolDownPassedTime();
-	bool getIsFireCoolingDown();
+	float getCoolDownTime();
+	float getCoolDownPassedTime();
+	bool getIsCoolingDown();
 
-	float getStoneCoolDownTime();
+	/*float getStoneCoolDownTime();
 	float getStoneCoolDownPassedTime();
-	bool getIsStoneCoolingDown();
+	bool getIsStoneCoolingDown();*/
 
 	void update(float elapsedTime);
-	void attackFire(Enemy* enemy);
-	void attackStone(Enemy* enemy, float protagonistPositionX);
+
+	//virtual void attack(Enemy* enemy) = 0;
+	//void attackStone(Enemy* enemy, float protagonistPositionX);
+
+protected:
+	void setCoolDownPassedTime(float _coolDownPassedTime);
+	void setIsCoolingDown(bool _isCoolingDown);
 
 private:
-	Attack*									fireAttack;
-	Attack*									flameAttack;
-	Attack*									stoneAttack;
+	//Attack*									fireAttack;
+	//Attack*									flameAttack;
+	//Attack*									stoneAttack;
 
-	float									fireCoolDownPassedTime;
-	float									fireCoolDownTime;
-	bool									isFireCoolingDown;
+	float									coolDownPassedTime;
+	float									coolDownTime;
+	bool									isCoolingDown;
 
-	float									stoneCoolDownPassedTime;
-	float									stoneCoolDownTime;
-	bool									isStoneCoolingDown;
+	//float									stoneCoolDownPassedTime;
+	//float									stoneCoolDownTime;
+	//bool									isStoneCoolingDown;
 };

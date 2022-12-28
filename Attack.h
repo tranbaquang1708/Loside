@@ -12,7 +12,8 @@ public:
 	{
 		Fire,
 		Flame,
-		Stone
+		Stone,
+		Transform
 	};
 
 	virtual unsigned short getType() = 0;

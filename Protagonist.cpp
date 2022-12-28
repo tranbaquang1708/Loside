@@ -29,9 +29,13 @@ void Protagonist::loadWalkAnimation(std::vector<DirectX::XMFLOAT2> sampledTrajec
 	walkAnimationTime = time;
 }
 
-void Protagonist::loadAttackInterface(AttackInterface *inAttackInterface)
+void Protagonist::loadAttackInterface(AttackInterfaceFire* _attackInterfaceFire,
+	AttackInterfaceStone* _attackInterfaceStone,
+	AttackInterfaceTransform* _attackInterfaceTransform)
 {
-	attackInterface = inAttackInterface;
+	attackInterfaceFire = _attackInterfaceFire;
+	attackInterfaceStone = _attackInterfaceStone;
+	attackInterfaceTransform = _attackInterfaceTransform;
 }
 
 void Protagonist::setDefaultScaling(RECT fullscreenRect)
@@ -148,13 +152,19 @@ void Protagonist::handleInput(DirectX::Keyboard::State keyboardInput, DirectX::K
 
 	if (keyboardTracker.pressed.X) { // X for fire
 		if (targetingEnemy != nullptr) {
-			attackInterface->attackFire(targetingEnemy);
+			attackInterfaceFire->attack(targetingEnemy);
 		}
 	}
 
 	if (keyboardTracker.pressed.C) { // C for stone
 		if (targetingEnemy != nullptr) {
-			attackInterface->attackStone(targetingEnemy, position.x);
+			attackInterfaceStone->attack(targetingEnemy, position.x);
+		}
+	}
+
+	if (keyboardTracker.pressed.S) { // C for stone
+		if (targetingEnemy != nullptr) {
+			attackInterfaceTransform->attack(targetingEnemy);
 		}
 	}
 }
