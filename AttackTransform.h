@@ -7,6 +7,7 @@ class AttackTransform : public Attack
 {
 public:
 	void loadFrog(Enemy* _frog);
+	void loadEnemies(std::list<Enemy>* _enemies);
 
 	unsigned short getType();
 	unsigned short getAilment();
@@ -14,6 +15,6 @@ public:
 	void attack(Enemy* enemy);
 
 private:
-	//std::list<Frog> frogs;
+	std::list<Enemy> *enemies;
 	Enemy* frog;
 };

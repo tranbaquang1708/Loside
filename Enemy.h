@@ -36,6 +36,12 @@ public:
 		Frog
 	};
 
+	enum VisibilityState : unsigned short
+	{
+		Visible,
+		NonExistence
+	};
+
 	void loadTexture(const wchar_t* texturePath, ID3D12Device* device, DirectX::ResourceUploadBatch& resourceUpload,
 		std::unique_ptr<DirectX::DescriptorHeap>& m_resourceDescriptors,
 		std::vector<bool>& m_descriptorStatuses, DirectX::XMUINT2 resolution);
@@ -49,10 +55,16 @@ public:
 	void setState();
 	void setState(unsigned short state);
 	void setWalkState();
+	void setTransformState(unsigned short state);
+	void setVisibilityState(unsigned short state);
+
 
 	DirectX::XMFLOAT2 getPosition();
 	DirectX::XMFLOAT2 getTextureSize();
 	unsigned short getAilment();
+	unsigned short getTransformState();
+	unsigned short getVisibilityState();
+	
 
 	void update(float elapsedTime, float arg_protagonistBottomRightX);
 
@@ -110,6 +122,8 @@ private:
 
 	unsigned short							currentState;
 	unsigned short							currentAttackedState;
+	unsigned short							currentTransformState;
+	unsigned short							currentVisibilityState;
 
 	float									protagonistBottomRightX;
 	

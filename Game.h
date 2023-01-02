@@ -115,8 +115,8 @@ private:
 
     //    Enemy
     //std::vector<Enemy>                          m_enemies;
-    Enemy                                       m_enemy;
-    Frog                                       m_frog;
+    std::list<Enemy>                            m_enemies;
+    Enemy                                       m_frog;
 
     //    Ailments
     std::map<unsigned short, Ailment>          m_ailments;

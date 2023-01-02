@@ -81,6 +81,16 @@ void Enemy::setWalkState()
 	}
 }
 
+void Enemy::setTransformState(unsigned short state)
+{
+	currentTransformState = state;
+}
+
+void Enemy::setVisibilityState(unsigned short state)
+{
+	currentVisibilityState = state;
+}
+
 DirectX::XMFLOAT2 Enemy::getPosition()
 {
 	return position;
@@ -96,8 +106,21 @@ unsigned short Enemy::getAilment()
 	return ailment;
 }
 
+unsigned short Enemy::getTransformState()
+{
+	return currentTransformState;
+}
+
+unsigned short Enemy::getVisibilityState()
+{
+	return currentVisibilityState;
+}
+
 void Enemy::update(float elapsedTime, float arg_protagonistBottomRightX)
 {
+	if (currentVisibilityState == VisibilityState::NonExistence)
+		return;
+
 	if (isHitStun) {
 		hitStunPassedTime += elapsedTime;
 		if (hitStunPassedTime > hitStunTime) {
@@ -129,6 +152,9 @@ void Enemy::draw(std::unique_ptr<DirectX::SpriteBatch>& m_spriteBatch,
 	std::unique_ptr<DirectX::DescriptorHeap>& m_resourceDescriptors,
 	RECT fullscreenRect)
 {
+	if (currentVisibilityState == VisibilityState::NonExistence)
+		return;
+
 	DirectX::XMUINT2 textureSize = DirectX::GetTextureSize(this->texture.Get());
 
 	m_spriteBatch->Draw(m_resourceDescriptors->GetGpuHandle(descriptorMap),
@@ -223,6 +249,7 @@ void Enemy::getPushedBack(float displacement, float duration)
 {
 	// MYTODO: Find better way to implement push back direction
 	// If currentAttackedState is not None then update original position (not implemented)
+	isHitStun = false; // If enemy is being hit stunned -> cancel hit stun
 	originalPosition.x += displacement;
 	pushedBackTime = duration;
 	attackedOriginalPosition = position;

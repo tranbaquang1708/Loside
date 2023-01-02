@@ -13,7 +13,8 @@ public:
 		Fire,
 		Flame,
 		Stone,
-		Transform
+		Transform,
+		Petrification
 	};
 
 	virtual unsigned short getType() = 0;

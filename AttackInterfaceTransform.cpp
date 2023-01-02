@@ -26,7 +26,6 @@ void AttackInterfaceTransform::attack(Enemy* enemy)
 
 		attackTransform->attack(enemy);
 
-		enemy->getAttacked(attackTransform->getAnimationTime() + 0.1f);
 		enemy->setAilment(attackTransform->getAilment());
 	//}
 }

@@ -2,7 +2,6 @@
 
 #include "AttackInterface.h"
 #include "AttackTransform.h"
-#include "Frog.h"
 
 class AttackInterfaceTransform : public AttackInterface
 {
