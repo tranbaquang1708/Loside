@@ -106,6 +106,7 @@ void Game::Update(DX::StepTimer const& timer)
     m_attackFlame.update(elapsedTime);
     m_attackStone.update(elapsedTime);
     m_attackTransform.update(elapsedTime);
+    m_attackPetrification.update(elapsedTime);
 
     // UI
     m_skillUIFire.update();
@@ -172,6 +173,7 @@ void Game::Render()
     m_attackFlame.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
     m_attackStone.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
     m_attackTransform.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
+    m_attackPetrification.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
 
     //    UI
     m_skillUIFire.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
@@ -364,15 +366,17 @@ void Game::CreateDeviceDependentResources()
     m_attackTransform.loadFrog(&m_frog);
     m_attackTransform.loadEnemies(&m_enemies);
 
+    m_attackPetrification.loadAnimation(L"../Assets/Attacks/Petrification", device, resourceUpload, m_resourceDescriptors,
+        m_descriptorStatuses, XMUINT2(3840, 2160), 0.025f);
 
     m_attackInterfaceFire.loadAttack(&m_attackFire, &m_attackFlame);
-    m_attackInterfaceFire.setCoolDownTime(.8f);
+    m_attackInterfaceFire.setCoolDownTime(0.8f);
 
     m_attackInterfaceStone.loadAttack(&m_attackStone);
-    m_attackInterfaceStone.setCoolDownTime(.8f);
+    m_attackInterfaceStone.setCoolDownTime(1.f);
 
-    m_attackInterfaceTransform.loadAttack(&m_attackTransform);
-    m_attackInterfaceTransform.setCoolDownTime(.8f);
+    m_attackInterfaceTransform.loadAttack(&m_attackTransform, &m_attackPetrification);
+    m_attackInterfaceTransform.setCoolDownTime(1.f);
 
     m_protagonist.loadAttackInterface(&m_attackInterfaceFire, &m_attackInterfaceStone, &m_attackInterfaceTransform);
 
@@ -475,6 +479,7 @@ void Game::CreateWindowSizeDependentResources()
     m_attackFlame.setDefaultScaling(m_fullscreenRect);
     m_attackStone.setDefaultScaling(m_fullscreenRect);
     m_attackTransform.setDefaultScaling(m_fullscreenRect);
+    m_attackPetrification.setDefaultScaling(m_fullscreenRect);
 
     //    Ailment
     for (auto& a : m_ailments) {
@@ -514,6 +519,7 @@ void Game::OnDeviceLost()
     m_attackFlame.reset(m_descriptorStatuses);
     m_attackStone.reset(m_descriptorStatuses);
     m_attackTransform.reset(m_descriptorStatuses);
+    m_attackPetrification.reset(m_descriptorStatuses);
     
     // Enemy
     for (Enemy& enemy : m_enemies) {

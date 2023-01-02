@@ -157,6 +157,9 @@
     <ClInclude Include="Frog.h">
       <Filter>Common\Texture2D</Filter>
     </ClInclude>
+    <ClInclude Include="AttackPetrification.h">
+      <Filter>Common\Attack</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -215,6 +218,9 @@
     </ClCompile>
     <ClCompile Include="Frog.cpp">
       <Filter>Common\Texture2D</Filter>
+    </ClCompile>
+    <ClCompile Include="AttackPetrification.cpp">
+      <Filter>Common\Attack</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

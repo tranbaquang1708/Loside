@@ -25,6 +25,8 @@ void AttackTransform::attack(Enemy* enemy)
 {
 	Attack::attack(enemy->getPosition());
 
+	//if (enemy->getIsPetrified()) return;
+
 	if (enemy->getTransformState() == Enemy::TransformState::Frog) {
 		enemy->getAttacked(getAnimationTime() + 0.1f);
 	}

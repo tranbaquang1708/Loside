@@ -18,7 +18,7 @@ public:
 		IdleState,
 		WalkingLeftState,
 		WalkingRightState,
-		FlippedState
+		StraightFalling
 	};
 
 	enum AttackedState : unsigned short
@@ -26,8 +26,7 @@ public:
 		None,
 		//HitStun,
 		PushedBackRight,
-		PushedBackLeft,
-		Flipped,
+		PushedBackLeft
 	};
 
 	enum TransformState : unsigned short
@@ -64,6 +63,7 @@ public:
 	unsigned short getAilment();
 	unsigned short getTransformState();
 	unsigned short getVisibilityState();
+	bool getIsPetrified();
 	
 
 	void update(float elapsedTime, float arg_protagonistBottomRightX);
@@ -80,9 +80,13 @@ public:
 	void playStayAnimation(float elapsedTime);
 	void playWalkAnimation(float elapsedTime);
 	void playPushedBackAnimation(float elapsedTime);
+	void playPetrifedAnimation(float elapsedTime);
+	void playStraightFallAnimation(float elapsedTime);
 
 	void getAttacked(float _stunTime);
 	void getPushedBack(float displacement, float duration);
+	void getPetrified(float duration);
+	void straightFall();
 	
 private:
 	int pushToHeap(std::vector<bool>& m_descriptorStatuses, int startIdx = 0);
@@ -92,7 +96,7 @@ private:
 	float									defaultScaling;
 	DirectX::XMFLOAT2						size;
 
-	DirectX::XMVECTORF32					color;
+	DirectX::XMVECTOR						color;
 
 	DirectX::XMFLOAT2						position;
 	DirectX::XMFLOAT2						originalPosition;
@@ -115,6 +119,12 @@ private:
 
 	float									pushedBackTime;
 	std::vector< DirectX::XMFLOAT2>			pushedBackTrajectory;
+
+	bool									isPetrified;
+	float									petrifiedTime;
+	float									petrifiedPassedTime;
+	float									straightFallTime;
+	std::vector< DirectX::XMFLOAT2>			straightFallTrajectory;
 
 	float									hitStunTime;
 	float									hitStunPassedTime;

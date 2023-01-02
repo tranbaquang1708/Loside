@@ -8,5 +8,5 @@ unsigned short AttackPetrification::getType()
 
 unsigned short AttackPetrification::getAilment()
 {
-	return Ailment::Petrification;
+	return Ailment::None;
 }
