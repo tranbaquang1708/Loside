@@ -1,5 +1,5 @@
 # Loside
-<img src="https://user-images.githubusercontent.com/37550326/209101588-7e4d5562-e85f-4a5a-b69c-cc4b8a7aae67.gif" width="50%" height="50%"/>
+<img src="https://user-images.githubusercontent.com/37550326/210304275-888766e6-6290-446f-b4d2-f6d3dc6ea918.gif" width="50%" height="50%"/>
 
 This README is written in [broken English](https://github.com/tranbaquang1708/Loside/edit/master/README.md#english) and [bad Japanese](https://github.com/tranbaquang1708/Loside/edit/master/README.md#%E6%97%A5%E6%9C%AC%E8%AA%9E).
 
@@ -7,14 +7,14 @@ This README is written in [broken English](https://github.com/tranbaquang1708/Lo
 
 # English
 ## Overview
-A bad 2D game that have not even reached pre-prototype stage.
+A bad 2D game.
 
 This game was created using DirectX 12 and Visual Studio. Assets created with Clip Studio Paint Pro and I need that batch export feature from the EX version.
 
 ## Gameplay
 You combine Kanjis to make new Kanji so it might make a little more sense if you have a small bit knowledge about Kanji.
 
-There are only 2 Kanjis though.
+There are only 4 Kanjis though.
 
 ## Controls
 →: Move left
@@ -23,17 +23,20 @@ There are only 2 Kanjis though.
 
 X: Use Fire
 
+C: Use Stone
+
+S: Use Transform
 
 # 日本語
 ## 概要
-プロトタイプさえなっていないくそ2Dゲームです。
+ただのくそ2Dゲームです。
 
-ゲーム自体はDirectX 12とVisual Studioで作られ、画像はClip Studio Paint Proで描かれ（書かれ？）ました。
+ゲームはDirectX 12とVisual Studioで作られ、画像はClip Studio Paint Proで描かれ（書かれ？）ました。
 
 ## 遊び方
-漢字を組み立てるゲームです。
+漢字を組み立てるゲームですが、習った漢字はあまりないです。
 
-「火」と「炎」しかわからない外国人でございます。
+「日本語を勉強しないと！」と思いつつ、今日もくそゲームを作りました。
 
 ## コントロール
 →：右の方へ移動する
@@ -41,3 +44,7 @@ X: Use Fire
 ←：左の方へ移動する
 
 X：「火」を使う
+
+C：「石」を使う
+
+S：「化」を使う
