@@ -102,6 +102,16 @@ DirectX::XMFLOAT2 Enemy::getTextureSize()
 	return size;
 }
 
+float Enemy::getProtagonistBottomRightX()
+{
+	return protagonistBottomRightX;
+}
+
+unsigned short Enemy::getState()
+{
+	return currentState;
+}
+
 unsigned short Enemy::getAilment()
 {
 	return ailment;
@@ -248,6 +258,23 @@ void Enemy::playWalkAnimation(float elapsedTime)
 	}
 }
 
+void Enemy::playStraightFallAnimation(float elapsedTime)
+{
+	animationPlayedTime += elapsedTime;
+
+	size_t currentPositionIdx = std::min(
+		straightFallTrajectory.size() - 1,
+		static_cast<size_t>(animationPlayedTime * (straightFallTrajectory.size() - 1) / straightFallTime)
+	);
+
+	position.y = originalPosition.y + straightFallTrajectory[currentPositionIdx].y;
+
+	if (currentPositionIdx == straightFallTrajectory.size() - 1) {
+		currentState = IdleState;
+		getPetrified(petrifiedTime);
+	}
+}
+
 void Enemy::playPushedBackAnimation(float elapsedTime)
 {
 	attackedAnimationPlayedTime += elapsedTime;
@@ -287,21 +314,22 @@ void Enemy::playPetrifedAnimation(float elapsedTime)
 	}
 }
 
-void Enemy::playStraightFallAnimation(float elapsedTime)
+void Enemy::straightFall()
 {
-	attackedAnimationPlayedTime += elapsedTime;
+	getAttacked(0.7f);
 
-	size_t currentPositionIdx = std::min(
-		straightFallTrajectory.size() - 1,
-		static_cast<size_t>(attackedAnimationPlayedTime * (straightFallTrajectory.size() - 1) / straightFallTime)
-	);
+	animationPlayedTime = 0.f;
 
-	position.y = attackedOriginalPosition.y + straightFallTrajectory[currentPositionIdx].y;
+	originalPosition = position;
+	straightFallTime = 0.03f;
+	
+	std::vector<float> straightFallYTrajectory = InputSampler::sampleInputFriction(0, 0.832f - position.y, 8);
+	straightFallTrajectory.clear();
+	std::transform(straightFallYTrajectory.begin(), straightFallYTrajectory.end(),
+		back_inserter(straightFallTrajectory),
+		[this](float const& y) { return DirectX::XMFLOAT2(position.x, y); });
 
-	if (currentPositionIdx == straightFallTrajectory.size() - 1) {
-		currentState = IdleState;
-		getPetrified(petrifiedTime);
-	}
+	currentState = StraightFalling;
 }
 
 void Enemy::getAttacked(float _stunTime)
@@ -342,34 +370,12 @@ void Enemy::getPushedBack(float displacement, float duration)
 
 void Enemy::getPetrified(float duration)
 {
-	if (currentAttackedState != None) {
-		currentAttackedState = None;
-		originalPosition.x += position.x - attackedOriginalPosition.x;
-	}
-
+	originalPosition.x += position.x - attackedOriginalPosition.x;
 	petrifiedTime = duration;
 	petrifiedPassedTime = 0.f;
 	color = DirectX::Colors::White * 0.7f;
 	//currentAttackedState = Petrified;
 	isPetrified = true;
-}
-
-void Enemy::straightFall()
-{
-	getAttacked(0.7f);
-
-	attackedAnimationPlayedTime = 0.f;
-
-	attackedOriginalPosition = position;
-	straightFallTime = 0.03f;
-	std::vector<float> straightFallYTrajectory = InputSampler::sampleInputFriction(0, 0.832f - position.y, 8);
-	straightFallTrajectory.clear();
-	std::transform(straightFallYTrajectory.begin(), straightFallYTrajectory.end(),
-		back_inserter(straightFallTrajectory),
-		[this](float const& y) { return DirectX::XMFLOAT2(position.x, y); });
-
-	currentAttackedState = None;
-	currentState = StraightFalling;
 }
 
 int Enemy::pushToHeap(std::vector<bool>& m_descriptorStatuses, int startIdx)

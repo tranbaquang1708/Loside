@@ -12,7 +12,7 @@ void AttackInterfaceStone::attack(Enemy* enemy, float protagonistPositionX)
 	setIsCoolingDown(true);
 	
 	DirectX::XMFLOAT2 position(enemy->getPosition().x, 0.835f);
-	
+
 	attackStone->attack(position);
 	
 	if (protagonistPositionX < enemy->getPosition().x) {

@@ -60,7 +60,9 @@ public:
 
 	DirectX::XMFLOAT2 getPosition();
 	DirectX::XMFLOAT2 getTextureSize();
+	float getProtagonistBottomRightX();
 	unsigned short getAilment();
+	unsigned short getState();
 	unsigned short getTransformState();
 	unsigned short getVisibilityState();
 	bool getIsPetrified();
@@ -79,14 +81,14 @@ public:
 	
 	void playStayAnimation(float elapsedTime);
 	void playWalkAnimation(float elapsedTime);
+	void playStraightFallAnimation(float elapsedTime);
 	void playPushedBackAnimation(float elapsedTime);
 	void playPetrifedAnimation(float elapsedTime);
-	void playStraightFallAnimation(float elapsedTime);
 
+	void straightFall();
 	void getAttacked(float _stunTime);
 	void getPushedBack(float displacement, float duration);
 	void getPetrified(float duration);
-	void straightFall();
 	
 private:
 	int pushToHeap(std::vector<bool>& m_descriptorStatuses, int startIdx = 0);

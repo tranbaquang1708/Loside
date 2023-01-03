@@ -86,6 +86,9 @@
     <Filter Include="Assets\Ailments\Stone">
       <UniqueIdentifier>{6c1e8100-d950-4640-85f6-205614154a55}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Assets\Attacks\Petrification">
+      <UniqueIdentifier>{3d1f93a3-18af-428c-a210-0f1c20785c67}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -376,6 +379,84 @@
     </Image>
     <Image Include="..\Assets\Ailments\Stone\stone.dds">
       <Filter>Assets\Ailments\Stone</Filter>
+    </Image>
+    <Image Include="..\Assets\Enemies\frog.dds">
+      <Filter>Assets\Enemy</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Petrification\00.dds">
+      <Filter>Assets\Attacks\Petrification</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Petrification\01.dds">
+      <Filter>Assets\Attacks\Petrification</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Petrification\02.dds">
+      <Filter>Assets\Attacks\Petrification</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Petrification\03.dds">
+      <Filter>Assets\Attacks\Petrification</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Petrification\04.dds">
+      <Filter>Assets\Attacks\Petrification</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Petrification\05.dds">
+      <Filter>Assets\Attacks\Petrification</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Petrification\06.dds">
+      <Filter>Assets\Attacks\Petrification</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Petrification\07.dds">
+      <Filter>Assets\Attacks\Petrification</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Petrification\08.dds">
+      <Filter>Assets\Attacks\Petrification</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Petrification\09.dds">
+      <Filter>Assets\Attacks\Petrification</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Petrification\10.dds">
+      <Filter>Assets\Attacks\Petrification</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Petrification\11.dds">
+      <Filter>Assets\Attacks\Petrification</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Petrification\12.dds">
+      <Filter>Assets\Attacks\Petrification</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Petrification\13.dds">
+      <Filter>Assets\Attacks\Petrification</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Petrification\14.dds">
+      <Filter>Assets\Attacks\Petrification</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Petrification\15.dds">
+      <Filter>Assets\Attacks\Petrification</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Petrification\16.dds">
+      <Filter>Assets\Attacks\Petrification</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Petrification\17.dds">
+      <Filter>Assets\Attacks\Petrification</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Petrification\18.dds">
+      <Filter>Assets\Attacks\Petrification</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Petrification\19.dds">
+      <Filter>Assets\Attacks\Petrification</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Petrification\20.dds">
+      <Filter>Assets\Attacks\Petrification</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Petrification\21.dds">
+      <Filter>Assets\Attacks\Petrification</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Petrification\22.dds">
+      <Filter>Assets\Attacks\Petrification</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Petrification\23.dds">
+      <Filter>Assets\Attacks\Petrification</Filter>
+    </Image>
+    <Image Include="..\Assets\Attacks\Petrification\24.dds">
+      <Filter>Assets\Attacks\Petrification</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

@@ -12,10 +12,6 @@
 #include "Texture2D.h"
 #include "SkillUI.h"
 #include "Protagonist.h"
-//#include "AttackFire.h"
-//#include "AttackFlame.h"
-//#include "AttackStone.h"
-//#include "AttackInterfaceFire.h"
 #include "Enemy.h"
 #include "Frog.h"
 
@@ -115,7 +111,6 @@ private:
     AttackPetrification                         m_attackPetrification;
 
     //    Enemy
-    //std::vector<Enemy>                          m_enemies;
     std::list<Enemy>                            m_enemies;
     Enemy                                       m_frog;
 
