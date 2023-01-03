@@ -370,7 +370,12 @@ void Enemy::getPushedBack(float displacement, float duration)
 
 void Enemy::getPetrified(float duration)
 {
-	originalPosition.x += position.x - attackedOriginalPosition.x;
+	if (currentAttackedState != None 
+		&& currentAttackedState != PushedBackRight 
+		&& currentAttackedState != PushedBackLeft) 
+	{
+		originalPosition.x += position.x - attackedOriginalPosition.x;
+	}
 	petrifiedTime = duration;
 	petrifiedPassedTime = 0.f;
 	color = DirectX::Colors::White * 0.7f;
