@@ -129,7 +129,6 @@ void Protagonist::cancelWalk()
 	setState(IdleState);
 }
 
-<<<<<<< HEAD
 void Protagonist::cancelAllAttacks()
 {
 	attackInterfaceFire->cancelAllAttacks();
@@ -137,8 +136,6 @@ void Protagonist::cancelAllAttacks()
 	attackInterfaceTransform->cancelAllAttacks();
 }
 
-=======
->>>>>>> origin/master
 void Protagonist::handleInput(DirectX::Keyboard::State keyboardInput, DirectX::Keyboard::KeyboardStateTracker& keyboardTracker)
 {
 	keyboardTracker.Update(keyboardInput);
@@ -162,35 +159,22 @@ void Protagonist::handleInput(DirectX::Keyboard::State keyboardInput, DirectX::K
 	}
 
 	if (keyboardTracker.pressed.X) { // X for fire
-<<<<<<< HEAD
 		if (targetingEnemy != nullptr && !(attackInterfaceFire->getIsCoolingDown())) {
 			cancelAllAttacks();
-=======
-		if (targetingEnemy != nullptr) {
->>>>>>> origin/master
 			attackInterfaceFire->attack(targetingEnemy);
 		}
 	}
 
 	if (keyboardTracker.pressed.C) { // C for stone
-<<<<<<< HEAD
 		if (targetingEnemy != nullptr && !(attackInterfaceStone->getIsCoolingDown())) {
 			cancelAllAttacks();
-=======
-		if (targetingEnemy != nullptr) {
->>>>>>> origin/master
 			attackInterfaceStone->attack(targetingEnemy, position.x);
 		}
 	}
 
-<<<<<<< HEAD
 	if (keyboardTracker.pressed.S) { // S for transform
 		if (targetingEnemy != nullptr && !(attackInterfaceTransform->getIsCoolingDown())) {
 			cancelAllAttacks();
-=======
-	if (keyboardTracker.pressed.S) { // C for stone
-		if (targetingEnemy != nullptr) {
->>>>>>> origin/master
 			attackInterfaceTransform->attack(targetingEnemy);
 		}
 	}

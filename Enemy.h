@@ -18,25 +18,17 @@ public:
 		IdleState,
 		WalkingLeftState,
 		WalkingRightState,
-<<<<<<< HEAD
 		StraightFalling
-=======
->>>>>>> origin/master
 	};
 
 	enum AttackedState : unsigned short
 	{
 		None,
-<<<<<<< HEAD
 		//HitStun,
-=======
-		HitStun,
->>>>>>> origin/master
 		PushedBackRight,
 		PushedBackLeft
 	};
 
-<<<<<<< HEAD
 	enum TransformState : unsigned short
 	{
 		NotTransformed,
@@ -49,8 +41,6 @@ public:
 		NonExistence
 	};
 
-=======
->>>>>>> origin/master
 	void loadTexture(const wchar_t* texturePath, ID3D12Device* device, DirectX::ResourceUploadBatch& resourceUpload,
 		std::unique_ptr<DirectX::DescriptorHeap>& m_resourceDescriptors,
 		std::vector<bool>& m_descriptorStatuses, DirectX::XMUINT2 resolution);
@@ -64,7 +54,6 @@ public:
 	void setState();
 	void setState(unsigned short state);
 	void setWalkState();
-<<<<<<< HEAD
 	void setTransformState(unsigned short state);
 	void setVisibilityState(unsigned short state);
 
@@ -77,13 +66,7 @@ public:
 	unsigned short getTransformState();
 	unsigned short getVisibilityState();
 	bool getIsPetrified();
-	
-=======
 
-	DirectX::XMFLOAT2 getPosition();
-	DirectX::XMFLOAT2 getTextureSize();
-	unsigned short getAilment();
->>>>>>> origin/master
 
 	void update(float elapsedTime, float arg_protagonistBottomRightX);
 
@@ -95,10 +78,9 @@ public:
 		RECT fullscreenRect, Ailment ailmentObject);
 
 	void reset(std::vector<bool>& m_descriptorStatuses);
-	
+
 	void playStayAnimation(float elapsedTime);
 	void playWalkAnimation(float elapsedTime);
-<<<<<<< HEAD
 	void playStraightFallAnimation(float elapsedTime);
 	void playPushedBackAnimation(float elapsedTime);
 	void playPetrifedAnimation(float elapsedTime);
@@ -107,13 +89,7 @@ public:
 	void getAttacked(float _stunTime);
 	void getPushedBack(float displacement, float duration);
 	void getPetrified(float duration);
-=======
-	void playPushedBackAnimation(float elapsedTime);
 
-	void getAttacked(float _stunTime);
-	void getPushedBack(float displacement, float duration);
->>>>>>> origin/master
-	
 private:
 	int pushToHeap(std::vector<bool>& m_descriptorStatuses, int startIdx = 0);
 
@@ -122,11 +98,7 @@ private:
 	float									defaultScaling;
 	DirectX::XMFLOAT2						size;
 
-<<<<<<< HEAD
 	DirectX::XMVECTOR						color;
-=======
-	DirectX::XMVECTORF32					color;
->>>>>>> origin/master
 
 	DirectX::XMFLOAT2						position;
 	DirectX::XMFLOAT2						originalPosition;
@@ -150,7 +122,6 @@ private:
 	float									pushedBackTime;
 	std::vector< DirectX::XMFLOAT2>			pushedBackTrajectory;
 
-<<<<<<< HEAD
 	bool									isPetrified;
 	float									petrifiedTime;
 	float									petrifiedPassedTime;
@@ -165,18 +136,8 @@ private:
 	unsigned short							currentAttackedState;
 	unsigned short							currentTransformState;
 	unsigned short							currentVisibilityState;
-=======
-	float									stunTime;
-
-	unsigned short							currentState;
-	unsigned short							currentAttackedState;
->>>>>>> origin/master
 
 	float									protagonistBottomRightX;
-	
-	unsigned short							ailment; // == Attack::Type
-<<<<<<< HEAD
-=======
 
->>>>>>> origin/master
+	unsigned short							ailment; // == Attack::Type
 };

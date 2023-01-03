@@ -58,14 +58,11 @@ void Attack::setDefaultScaling(RECT fullscreenRect)
 	size.y = originalSize.y * defaultScaling / (fullscreenRect.bottom);
 }
 
-<<<<<<< HEAD
 void Attack::setIsOn(bool _isOn)
 {
 	isOn = _isOn;
 }
 
-=======
->>>>>>> origin/master
 bool Attack::getIsOn()
 {
 	return isOn;
@@ -106,7 +103,7 @@ void Attack::update(float elapsedTime)
 	if (!isOn) return;
 
 	this->animationPlayedTime += elapsedTime;
-		
+
 	this->currentFrameIdx = static_cast<int>(this->animationPlayedTime / this->frameTime);
 
 	if (this->currentFrameIdx > this->frames.size() - 1) {
