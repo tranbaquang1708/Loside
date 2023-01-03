@@ -35,6 +35,8 @@ public:
 	void walk(float elapsedTime);
 	void cancelWalk();
 
+	void cancelAllAttacks();
+
 	void handleInput(DirectX::Keyboard::State keyboardInput, DirectX::Keyboard::KeyboardStateTracker& keyboardTracker);
 
 private:
@@ -63,9 +65,9 @@ private:
 		WalkingRightState
 	};
 
-	Enemy*									targetingEnemy;
+	Enemy* targetingEnemy;
 
-	AttackInterfaceFire*					attackInterfaceFire;
-	AttackInterfaceStone*					attackInterfaceStone;
-	AttackInterfaceTransform*				attackInterfaceTransform;
+	AttackInterfaceFire* attackInterfaceFire;
+	AttackInterfaceStone* attackInterfaceStone;
+	AttackInterfaceTransform* attackInterfaceTransform;
 };

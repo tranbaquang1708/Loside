@@ -9,6 +9,8 @@ public:
 	void loadAttack(AttackStone* _attackStone);
 	void attack(Enemy* enemy, float protagonistPositionX);
 
+	void cancelAllAttacks() override;
+
 private:
 	AttackStone* attackStone;
 };

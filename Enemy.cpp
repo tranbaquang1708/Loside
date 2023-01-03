@@ -18,6 +18,7 @@ void Enemy::loadTexture(const wchar_t* texturePath, ID3D12Device* device, Direct
 	rotation = 0.f;
 	originalRotation = 0.f;
 	color = DirectX::Colors::White;
+	isPetrified = false;
 
 	currentAttackedState = None;
 }
@@ -81,6 +82,16 @@ void Enemy::setWalkState()
 	}
 }
 
+void Enemy::setTransformState(unsigned short state)
+{
+	currentTransformState = state;
+}
+
+void Enemy::setVisibilityState(unsigned short state)
+{
+	currentVisibilityState = state;
+}
+
 DirectX::XMFLOAT2 Enemy::getPosition()
 {
 	return position;
@@ -91,25 +102,81 @@ DirectX::XMFLOAT2 Enemy::getTextureSize()
 	return size;
 }
 
+float Enemy::getProtagonistBottomRightX()
+{
+	return protagonistBottomRightX;
+}
+
+unsigned short Enemy::getState()
+{
+	return currentState;
+}
+
 unsigned short Enemy::getAilment()
 {
 	return ailment;
 }
 
+unsigned short Enemy::getTransformState()
+{
+	return currentTransformState;
+}
+
+unsigned short Enemy::getVisibilityState()
+{
+	return currentVisibilityState;
+}
+
+bool Enemy::getIsPetrified()
+{
+	return isPetrified;
+}
+
 void Enemy::update(float elapsedTime, float arg_protagonistBottomRightX)
 {
-	if (currentAttackedState == HitStun) {
-		attackedAnimationPlayedTime += elapsedTime;
-		if (attackedAnimationPlayedTime > stunTime) {
-			currentAttackedState = None;
-		}
+	unsigned short priority = 0;
+
+
+	if (currentVisibilityState == VisibilityState::NonExistence)
+		priority = 1;
+
+	if (priority == 1)
 		return;
+
+	if (isHitStun) {
+		priority = 2;
+
+		hitStunPassedTime += elapsedTime;
+		if (hitStunPassedTime > hitStunTime) {
+			//currentAttackedState = None;
+			isHitStun = false;
+		}
+	}
+
+	if (priority == 2)
+		return;
+
+	if (currentState == StraightFalling) {
+		playStraightFallAnimation(elapsedTime);
+		priority = 3;
+	}
+
+	/*if (currentAttackedState == Petrified) {
+		playPetrifedAnimation(elapsedTime);
+		return;
+	}*/
+	if (isPetrified) {
+		playPetrifedAnimation(elapsedTime);
+		priority = 3;
 	}
 
 	if (currentAttackedState == PushedBackRight || currentAttackedState == PushedBackLeft) {
 		playPushedBackAnimation(elapsedTime);
-		return;
+		priority = 3;
 	}
+
+	if (priority == 3)
+		return;
 
 	protagonistBottomRightX = arg_protagonistBottomRightX;
 
@@ -128,6 +195,9 @@ void Enemy::draw(std::unique_ptr<DirectX::SpriteBatch>& m_spriteBatch,
 	std::unique_ptr<DirectX::DescriptorHeap>& m_resourceDescriptors,
 	RECT fullscreenRect)
 {
+	if (currentVisibilityState == VisibilityState::NonExistence)
+		return;
+
 	DirectX::XMUINT2 textureSize = DirectX::GetTextureSize(this->texture.Get());
 
 	m_spriteBatch->Draw(m_resourceDescriptors->GetGpuHandle(descriptorMap),
@@ -188,6 +258,23 @@ void Enemy::playWalkAnimation(float elapsedTime)
 	}
 }
 
+void Enemy::playStraightFallAnimation(float elapsedTime)
+{
+	animationPlayedTime += elapsedTime;
+
+	size_t currentPositionIdx = std::min(
+		straightFallTrajectory.size() - 1,
+		static_cast<size_t>(animationPlayedTime * (straightFallTrajectory.size() - 1) / straightFallTime)
+	);
+
+	position.y = originalPosition.y + straightFallTrajectory[currentPositionIdx].y;
+
+	if (currentPositionIdx == straightFallTrajectory.size() - 1) {
+		currentState = IdleState;
+		getPetrified(petrifiedTime);
+	}
+}
+
 void Enemy::playPushedBackAnimation(float elapsedTime)
 {
 	attackedAnimationPlayedTime += elapsedTime;
@@ -205,21 +292,64 @@ void Enemy::playPushedBackAnimation(float elapsedTime)
 	}
 
 	if (currentPositionIdx == pushedBackTrajectory.size() - 1) {
+		if (currentAttackedState == PushedBackRight) {
+			originalPosition.x += pushedBackTrajectory[currentPositionIdx].x;
+		}
+		else {
+			originalPosition.x -= pushedBackTrajectory[currentPositionIdx].x;
+		}
+		currentAttackedState = None;
 		getAttacked(0.1f);
 	}
 }
 
+void Enemy::playPetrifedAnimation(float elapsedTime)
+{
+	petrifiedPassedTime += elapsedTime;
+
+	if (petrifiedPassedTime > petrifiedTime) {
+		color = DirectX::Colors::White;
+		isPetrified = false;
+		getAttacked(0.05f);
+	}
+}
+
+void Enemy::straightFall()
+{
+	getAttacked(0.7f);
+
+	animationPlayedTime = 0.f;
+
+	originalPosition = position;
+	straightFallTime = 0.03f;
+
+	std::vector<float> straightFallYTrajectory = InputSampler::sampleInputFriction(0, 0.832f - position.y, 8);
+	straightFallTrajectory.clear();
+	std::transform(straightFallYTrajectory.begin(), straightFallYTrajectory.end(),
+		back_inserter(straightFallTrajectory),
+		[this](float const& y) { return DirectX::XMFLOAT2(position.x, y); });
+
+	currentState = StraightFalling;
+}
+
 void Enemy::getAttacked(float _stunTime)
 {
-	stunTime = _stunTime;
-	currentAttackedState = HitStun;
-	attackedAnimationPlayedTime = 0;
+	hitStunTime = _stunTime;
+	isHitStun = true;
+	hitStunPassedTime = 0;
 }
 
 void Enemy::getPushedBack(float displacement, float duration)
 {
 	// MYTODO: Find better way to implement push back direction
-	originalPosition.x += displacement;
+	// If currentAttackedState is not None then update original position (not implemented)
+
+	// Is enemy is petrified -> half the displacement
+	//if (currentAttackedState == Petrified)
+	if (isPetrified)
+		displacement *= 0.5f;
+
+	isHitStun = false; // If enemy is being hit stunned -> cancel hit stun
 	pushedBackTime = duration;
 	attackedOriginalPosition = position;
 	attackedAnimationPlayedTime = 0;
@@ -231,11 +361,21 @@ void Enemy::getPushedBack(float displacement, float duration)
 		currentAttackedState = PushedBackLeft;
 		displacement = -displacement;
 	}
-	
+
 	std::vector<float> pushedBackXTrajectory = InputSampler::sampleInputFriction(0, displacement, 10);
 	pushedBackTrajectory.clear();
 	std::transform(pushedBackXTrajectory.begin(), pushedBackXTrajectory.end(), back_inserter(pushedBackTrajectory),
 		[this](float const& x) { return DirectX::XMFLOAT2(x, position.y); });
+}
+
+void Enemy::getPetrified(float duration)
+{
+	originalPosition.x += position.x - attackedOriginalPosition.x;
+	petrifiedTime = duration;
+	petrifiedPassedTime = 0.f;
+	color = DirectX::Colors::White * 0.7f;
+	//currentAttackedState = Petrified;
+	isPetrified = true;
 }
 
 int Enemy::pushToHeap(std::vector<bool>& m_descriptorStatuses, int startIdx)

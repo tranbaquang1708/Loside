@@ -43,7 +43,7 @@ void Game::Initialize(HWND window, int width, int height)
 
     // TODO: Change the timer settings if you want something other than the default variable timestep mode.
     // e.g. for 60 FPS fixed timestep update logic, call:
-    
+
     m_timer.SetFixedTimeStep(true);
     m_timer.SetTargetElapsedSeconds(1.0 / 120);
 
@@ -58,9 +58,9 @@ void Game::Initialize(HWND window, int width, int height)
 void Game::Tick()
 {
     m_timer.Tick([&]()
-    {
-        Update(m_timer);
-    });
+        {
+            Update(m_timer);
+        });
 
     Render();
 }
@@ -87,10 +87,14 @@ void Game::Update(DX::StepTimer const& timer)
 
     // Protagonist
     m_protagonist.handleInput(keyboardInput, m_keyboardTracker);
-    m_protagonist.update(elapsedTime, &m_enemy);
+    m_protagonist.update(elapsedTime, &(m_enemies.front()));
+
 
     // Enemy
-    m_enemy.update(elapsedTime, m_protagonist.getPosition().x);
+    for (Enemy& enemy : m_enemies) {
+        enemy.update(elapsedTime, m_protagonist.getPosition().x);
+    }
+    //m_enemy.update(elapsedTime, m_protagonist.getPosition().x);
 
     // Attack
     m_attackInterfaceFire.update(elapsedTime);
@@ -101,6 +105,7 @@ void Game::Update(DX::StepTimer const& timer)
     m_attackFlame.update(elapsedTime);
     m_attackStone.update(elapsedTime);
     m_attackTransform.update(elapsedTime);
+    m_attackPetrification.update(elapsedTime);
 
     // UI
     m_skillUIFire.update();
@@ -151,16 +156,23 @@ void Game::Render()
     m_protagonist.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
 
     //    Enemy
-    m_enemy.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
+    for (Enemy& enemy : m_enemies) {
+        enemy.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
+        if (enemy.getAilment() != Ailment::None) {
+            enemy.drawAilment(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect, m_ailments.at(enemy.getAilment()));
+        }
+    }
+    /*m_enemy.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
     if (m_enemy.getAilment() != Ailment::None) {
         m_enemy.drawAilment(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect, m_ailments.at(m_enemy.getAilment()));
-    }
+    }*/
 
     //    Attack
     m_attackFire.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
     m_attackFlame.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
     m_attackStone.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
     m_attackTransform.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
+    m_attackPetrification.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
 
     //    UI
     m_skillUIFire.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
@@ -168,7 +180,7 @@ void Game::Render()
     m_skillUITransform.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
 
     m_spriteBatch->End();
-    
+
     // END TODO
     PIXEndEvent(commandList);
 
@@ -320,11 +332,23 @@ void Game::CreateDeviceDependentResources()
     m_protagonist.setPosition(XMFLOAT2(0.03f, 0.68f));
 
     //    Enemy
-    m_enemy.loadTexture(L"../Assets/Enemies/enemy.dds", device, resourceUpload, m_resourceDescriptors,
+    m_enemies.push_back(Enemy());
+    m_enemies.back().loadTexture(L"../Assets/Enemies/enemy.dds", device, resourceUpload, m_resourceDescriptors,
         m_descriptorStatuses, XMUINT2(3840, 2160));
-    m_enemy.setState();
-    m_enemy.setPosition(XMFLOAT2(0.9f, 0.835f));
-    m_enemy.setAilment(Ailment::None);
+    m_enemies.back().setState();
+    m_enemies.back().setPosition(XMFLOAT2(0.9f, 0.832f));
+    m_enemies.back().setAilment(Ailment::None);
+    m_enemies.back().setTransformState(Enemy::TransformState::NotTransformed);
+    m_enemies.back().setVisibilityState(Enemy::VisibilityState::Visible);
+
+
+    m_frog.loadTexture(L"../Assets/Enemies/frog.dds", device, resourceUpload, m_resourceDescriptors,
+        m_descriptorStatuses, XMUINT2(3840, 2160));
+    m_frog.setState();
+    m_frog.setPosition(XMFLOAT2(0.8f, 0.832f));
+    m_frog.setAilment(Ailment::None);
+    m_frog.setTransformState(Enemy::TransformState::Frog);
+    m_frog.setVisibilityState(Enemy::VisibilityState::Visible);
 
     //      Attacks
     m_attackFire.loadAnimation(L"../Assets/Attacks/Fire", device, resourceUpload, m_resourceDescriptors,
@@ -334,19 +358,24 @@ void Game::CreateDeviceDependentResources()
         m_descriptorStatuses, XMUINT2(3840, 2160), 0.025f);
 
     m_attackStone.loadAnimation(L"../Assets/Attacks/Stone", device, resourceUpload, m_resourceDescriptors,
-        m_descriptorStatuses, XMUINT2(3840, 2160), 1/18.f);
+        m_descriptorStatuses, XMUINT2(3840, 2160), 1 / 18.f);
 
     m_attackTransform.loadAnimation(L"../Assets/Attacks/Transform", device, resourceUpload, m_resourceDescriptors,
         m_descriptorStatuses, XMUINT2(3840, 2160), 0, .3f);
+    m_attackTransform.loadFrog(&m_frog);
+    m_attackTransform.loadEnemies(&m_enemies);
+
+    m_attackPetrification.loadAnimation(L"../Assets/Attacks/Petrification", device, resourceUpload, m_resourceDescriptors,
+        m_descriptorStatuses, XMUINT2(3840, 2160), 0.025f);
 
     m_attackInterfaceFire.loadAttack(&m_attackFire, &m_attackFlame);
-    m_attackInterfaceFire.setCoolDownTime(.8f);
+    m_attackInterfaceFire.setCoolDownTime(0.8f);
 
     m_attackInterfaceStone.loadAttack(&m_attackStone);
-    m_attackInterfaceStone.setCoolDownTime(.8f);
+    m_attackInterfaceStone.setCoolDownTime(1.f);
 
-    m_attackInterfaceTransform.loadAttack(&m_attackTransform);
-    m_attackInterfaceTransform.setCoolDownTime(.8f);
+    m_attackInterfaceTransform.loadAttack(&m_attackTransform, &m_attackPetrification);
+    m_attackInterfaceTransform.setCoolDownTime(1.f);
 
     m_protagonist.loadAttackInterface(&m_attackInterfaceFire, &m_attackInterfaceStone, &m_attackInterfaceTransform);
 
@@ -410,23 +439,37 @@ void Game::CreateWindowSizeDependentResources()
     float walkLength = m_protagonist.getTextureSize().x * 0.8f;
     // Special quadratic function f(x) = -(1/2a) * (x - a)^2 + a/2
     // f(x) = 0 <=> x = 0 || x = 2a
-    QuadraticFunction protagWalkTrajectory(-1.f/ (2 * walkLength), -walkLength, walkLength/2);
+    QuadraticFunction protagWalkTrajectory(-1.f / (2 * walkLength), -walkLength, walkLength / 2);
     m_protagonist.loadWalkAnimation(
         protagWalkTrajectory.sample(InputSampler::sampleInputUniform(0, 2 * walkLength, 20)),
         .15f
     );
 
     //    Enemy
-    m_enemy.setDefaultScaling(m_fullscreenRect);
+    m_enemies.back().setDefaultScaling(m_fullscreenRect);
 
-    walkLength = m_enemy.getTextureSize().x;
+    walkLength = m_enemies.back().getTextureSize().x;
     halfCircleYPositiveFunction enemyWalkTrajectory(walkLength * sqrtf(0.5f), walkLength * 0.5f, -walkLength * 0.5f);
     std::vector<float> walkAngles = InputSampler::sampleInputFalling(3 * DirectX::XM_PIDIV4, DirectX::XM_PIDIV4, 10);
     std::vector<float> rollAngles = InputSampler::sampleInputFalling(0, DirectX::XM_PIDIV2, 10);
 
-    m_enemy.loadWalkAnimation(
+    m_enemies.back().loadWalkAnimation(
         enemyWalkTrajectory.sampleByAngle(walkAngles),
         rollAngles,
+        0.3f
+    );
+
+    m_frog.setDefaultScaling(m_fullscreenRect);
+
+    walkLength = m_frog.getTextureSize().x;
+    QuadraticFunction frogWalkTrajectory(-1.f / (2 * walkLength), -walkLength, walkLength / 2);
+    std::vector<float> frogWalkAngles = InputSampler::sampleInputUniform(0, 2 * walkLength, 20);
+    //std::vector<float> rollAngles = InputSampler::sampleInputFalling(0, DirectX::XM_PIDIV2, 10);
+    std::vector<float> frogRollAngles(frogWalkAngles.size(), 0.f);
+
+    m_frog.loadWalkAnimation(
+        frogWalkTrajectory.sample(frogWalkAngles),
+        frogRollAngles,
         0.3f
     );
 
@@ -435,6 +478,7 @@ void Game::CreateWindowSizeDependentResources()
     m_attackFlame.setDefaultScaling(m_fullscreenRect);
     m_attackStone.setDefaultScaling(m_fullscreenRect);
     m_attackTransform.setDefaultScaling(m_fullscreenRect);
+    m_attackPetrification.setDefaultScaling(m_fullscreenRect);
 
     //    Ailment
     for (auto& a : m_ailments) {
@@ -457,7 +501,7 @@ void Game::OnDeviceLost()
     // TODO: Add Direct3D resource cleanup here.
     // Sprite batch
     m_spriteBatch.reset();
-    
+
     // Background
     m_background.reset(m_descriptorStatuses);
     m_backgroundText.reset(m_descriptorStatuses);
@@ -468,15 +512,20 @@ void Game::OnDeviceLost()
 
     // Protagonist
     m_protagonist.reset(m_descriptorStatuses);
-    
+
     // Attack
     m_attackFire.reset(m_descriptorStatuses);
     m_attackFlame.reset(m_descriptorStatuses);
     m_attackStone.reset(m_descriptorStatuses);
     m_attackTransform.reset(m_descriptorStatuses);
-    
+    m_attackPetrification.reset(m_descriptorStatuses);
+
     // Enemy
-    m_enemy.reset(m_descriptorStatuses);
+    for (Enemy& enemy : m_enemies) {
+        enemy.reset(m_descriptorStatuses);
+    }
+    //m_enemy.reset(m_descriptorStatuses);
+    m_frog.reset(m_descriptorStatuses);
 
     // Ailment
     for (auto& a : m_ailments) {
@@ -490,7 +539,7 @@ void Game::OnDeviceLost()
 
     // END TODO
     // If using the DirectX Tool Kit for DX12, uncomment this line:
-     m_graphicsMemory.reset();
+    m_graphicsMemory.reset();
 }
 
 void Game::OnDeviceRestored()

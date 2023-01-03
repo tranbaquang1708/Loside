@@ -12,11 +12,8 @@
 #include "Texture2D.h"
 #include "SkillUI.h"
 #include "Protagonist.h"
-#include "AttackFire.h"
-#include "AttackFlame.h"
-#include "AttackStone.h"
-#include "AttackInterfaceFire.h"
 #include "Enemy.h"
+#include "Frog.h"
 
 
 // A basic game implementation that creates a D3D12 device and
@@ -54,7 +51,7 @@ public:
     void OnWindowSizeChanged(int width, int height);
 
     // Properties
-    void GetDefaultSize( int& width, int& height ) const noexcept;
+    void GetDefaultSize(int& width, int& height) const noexcept;
 
 private:
 
@@ -83,8 +80,8 @@ private:
     // Texture
     std::unique_ptr<DirectX::DescriptorHeap>   m_resourceDescriptors;
     std::vector<bool>                          m_descriptorStatuses;
-    std::unique_ptr<DirectX::SpriteBatch>      m_spriteBatch;  
-    
+    std::unique_ptr<DirectX::SpriteBatch>      m_spriteBatch;
+
     //    Background
     Texture2D                                   m_background;
     Animation2D                                 m_backgroundText;
@@ -111,9 +108,11 @@ private:
     AttackFlame                                 m_attackFlame;
     AttackStone                                 m_attackStone;
     AttackTransform                             m_attackTransform;
+    AttackPetrification                         m_attackPetrification;
 
     //    Enemy
-    Enemy                                       m_enemy;
+    std::list<Enemy>                            m_enemies;
+    Enemy                                       m_frog;
 
     //    Ailments
     std::map<unsigned short, Ailment>          m_ailments;

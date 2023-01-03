@@ -18,14 +18,27 @@ public:
 		IdleState,
 		WalkingLeftState,
 		WalkingRightState,
+		StraightFalling
 	};
 
 	enum AttackedState : unsigned short
 	{
 		None,
-		HitStun,
+		//HitStun,
 		PushedBackRight,
 		PushedBackLeft
+	};
+
+	enum TransformState : unsigned short
+	{
+		NotTransformed,
+		Frog
+	};
+
+	enum VisibilityState : unsigned short
+	{
+		Visible,
+		NonExistence
 	};
 
 	void loadTexture(const wchar_t* texturePath, ID3D12Device* device, DirectX::ResourceUploadBatch& resourceUpload,
@@ -41,10 +54,19 @@ public:
 	void setState();
 	void setState(unsigned short state);
 	void setWalkState();
+	void setTransformState(unsigned short state);
+	void setVisibilityState(unsigned short state);
+
 
 	DirectX::XMFLOAT2 getPosition();
 	DirectX::XMFLOAT2 getTextureSize();
+	float getProtagonistBottomRightX();
 	unsigned short getAilment();
+	unsigned short getState();
+	unsigned short getTransformState();
+	unsigned short getVisibilityState();
+	bool getIsPetrified();
+
 
 	void update(float elapsedTime, float arg_protagonistBottomRightX);
 
@@ -56,14 +78,18 @@ public:
 		RECT fullscreenRect, Ailment ailmentObject);
 
 	void reset(std::vector<bool>& m_descriptorStatuses);
-	
+
 	void playStayAnimation(float elapsedTime);
 	void playWalkAnimation(float elapsedTime);
+	void playStraightFallAnimation(float elapsedTime);
 	void playPushedBackAnimation(float elapsedTime);
+	void playPetrifedAnimation(float elapsedTime);
 
+	void straightFall();
 	void getAttacked(float _stunTime);
 	void getPushedBack(float displacement, float duration);
-	
+	void getPetrified(float duration);
+
 private:
 	int pushToHeap(std::vector<bool>& m_descriptorStatuses, int startIdx = 0);
 
@@ -72,7 +98,7 @@ private:
 	float									defaultScaling;
 	DirectX::XMFLOAT2						size;
 
-	DirectX::XMVECTORF32					color;
+	DirectX::XMVECTOR						color;
 
 	DirectX::XMFLOAT2						position;
 	DirectX::XMFLOAT2						originalPosition;
@@ -96,13 +122,22 @@ private:
 	float									pushedBackTime;
 	std::vector< DirectX::XMFLOAT2>			pushedBackTrajectory;
 
-	float									stunTime;
+	bool									isPetrified;
+	float									petrifiedTime;
+	float									petrifiedPassedTime;
+	float									straightFallTime;
+	std::vector< DirectX::XMFLOAT2>			straightFallTrajectory;
+
+	float									hitStunTime;
+	float									hitStunPassedTime;
+	bool									isHitStun;
 
 	unsigned short							currentState;
 	unsigned short							currentAttackedState;
+	unsigned short							currentTransformState;
+	unsigned short							currentVisibilityState;
 
 	float									protagonistBottomRightX;
-	
-	unsigned short							ailment; // == Attack::Type
 
+	unsigned short							ailment; // == Attack::Type
 };

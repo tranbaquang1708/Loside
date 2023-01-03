@@ -13,7 +13,8 @@ public:
 		Fire,
 		Flame,
 		Stone,
-		Transform
+		Transform,
+		Petrification
 	};
 
 	virtual unsigned short getType() = 0;
@@ -24,6 +25,7 @@ public:
 		DirectX::XMUINT2 resolution, float arg_frameTime = 1 / 12., float animationLength = 0);
 
 	void setDefaultScaling(RECT fullscreenRect);
+	void setIsOn(bool _isOn);
 
 	bool getIsOn();
 	float getAnimationTime();

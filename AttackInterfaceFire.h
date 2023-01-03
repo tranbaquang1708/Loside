@@ -10,7 +10,9 @@ public:
 	void loadAttack(AttackFire* _attackFire, AttackFlame* _attackFlame);
 	void attack(Enemy* enemy);
 
+	void cancelAllAttacks() override;
+
 private:
-	AttackFire*		attackFire;
-	AttackFlame*	attackFlame;
+	AttackFire* attackFire;
+	AttackFlame* attackFlame;
 };
