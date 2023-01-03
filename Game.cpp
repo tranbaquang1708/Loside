@@ -87,6 +87,7 @@ void Game::Update(DX::StepTimer const& timer)
 
     // Protagonist
     m_protagonist.handleInput(keyboardInput, m_keyboardTracker);
+<<<<<<< HEAD
     m_protagonist.update(elapsedTime, &(m_enemies.front()));
 
 
@@ -95,6 +96,12 @@ void Game::Update(DX::StepTimer const& timer)
         enemy.update(elapsedTime, m_protagonist.getPosition().x);
     }
     //m_enemy.update(elapsedTime, m_protagonist.getPosition().x);
+=======
+    m_protagonist.update(elapsedTime, &m_enemy);
+
+    // Enemy
+    m_enemy.update(elapsedTime, m_protagonist.getPosition().x);
+>>>>>>> origin/master
 
     // Attack
     m_attackInterfaceFire.update(elapsedTime);
@@ -105,7 +112,10 @@ void Game::Update(DX::StepTimer const& timer)
     m_attackFlame.update(elapsedTime);
     m_attackStone.update(elapsedTime);
     m_attackTransform.update(elapsedTime);
+<<<<<<< HEAD
     m_attackPetrification.update(elapsedTime);
+=======
+>>>>>>> origin/master
 
     // UI
     m_skillUIFire.update();
@@ -156,6 +166,7 @@ void Game::Render()
     m_protagonist.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
 
     //    Enemy
+<<<<<<< HEAD
     for (Enemy& enemy : m_enemies) {
         enemy.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
         if (enemy.getAilment() != Ailment::None) {
@@ -166,13 +177,22 @@ void Game::Render()
     if (m_enemy.getAilment() != Ailment::None) {
         m_enemy.drawAilment(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect, m_ailments.at(m_enemy.getAilment()));
     }*/
+=======
+    m_enemy.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
+    if (m_enemy.getAilment() != Ailment::None) {
+        m_enemy.drawAilment(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect, m_ailments.at(m_enemy.getAilment()));
+    }
+>>>>>>> origin/master
 
     //    Attack
     m_attackFire.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
     m_attackFlame.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
     m_attackStone.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
     m_attackTransform.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
+<<<<<<< HEAD
     m_attackPetrification.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
+=======
+>>>>>>> origin/master
 
     //    UI
     m_skillUIFire.draw(m_spriteBatch, m_resourceDescriptors, m_fullscreenRect);
@@ -332,6 +352,7 @@ void Game::CreateDeviceDependentResources()
     m_protagonist.setPosition(XMFLOAT2(0.03f, 0.68f));
 
     //    Enemy
+<<<<<<< HEAD
     m_enemies.push_back(Enemy());
     m_enemies.back().loadTexture(L"../Assets/Enemies/enemy.dds", device, resourceUpload, m_resourceDescriptors,
         m_descriptorStatuses, XMUINT2(3840, 2160));
@@ -349,6 +370,13 @@ void Game::CreateDeviceDependentResources()
     m_frog.setAilment(Ailment::None);
     m_frog.setTransformState(Enemy::TransformState::Frog);
     m_frog.setVisibilityState(Enemy::VisibilityState::Visible);
+=======
+    m_enemy.loadTexture(L"../Assets/Enemies/enemy.dds", device, resourceUpload, m_resourceDescriptors,
+        m_descriptorStatuses, XMUINT2(3840, 2160));
+    m_enemy.setState();
+    m_enemy.setPosition(XMFLOAT2(0.9f, 0.835f));
+    m_enemy.setAilment(Ailment::None);
+>>>>>>> origin/master
 
     //      Attacks
     m_attackFire.loadAnimation(L"../Assets/Attacks/Fire", device, resourceUpload, m_resourceDescriptors,
@@ -362,6 +390,7 @@ void Game::CreateDeviceDependentResources()
 
     m_attackTransform.loadAnimation(L"../Assets/Attacks/Transform", device, resourceUpload, m_resourceDescriptors,
         m_descriptorStatuses, XMUINT2(3840, 2160), 0, .3f);
+<<<<<<< HEAD
     m_attackTransform.loadFrog(&m_frog);
     m_attackTransform.loadEnemies(&m_enemies);
 
@@ -376,6 +405,17 @@ void Game::CreateDeviceDependentResources()
 
     m_attackInterfaceTransform.loadAttack(&m_attackTransform, &m_attackPetrification);
     m_attackInterfaceTransform.setCoolDownTime(1.f);
+=======
+
+    m_attackInterfaceFire.loadAttack(&m_attackFire, &m_attackFlame);
+    m_attackInterfaceFire.setCoolDownTime(.8f);
+
+    m_attackInterfaceStone.loadAttack(&m_attackStone);
+    m_attackInterfaceStone.setCoolDownTime(.8f);
+
+    m_attackInterfaceTransform.loadAttack(&m_attackTransform);
+    m_attackInterfaceTransform.setCoolDownTime(.8f);
+>>>>>>> origin/master
 
     m_protagonist.loadAttackInterface(&m_attackInterfaceFire, &m_attackInterfaceStone, &m_attackInterfaceTransform);
 
@@ -446,19 +486,30 @@ void Game::CreateWindowSizeDependentResources()
     );
 
     //    Enemy
+<<<<<<< HEAD
     m_enemies.back().setDefaultScaling(m_fullscreenRect);
 
     walkLength = m_enemies.back().getTextureSize().x;
+=======
+    m_enemy.setDefaultScaling(m_fullscreenRect);
+
+    walkLength = m_enemy.getTextureSize().x;
+>>>>>>> origin/master
     halfCircleYPositiveFunction enemyWalkTrajectory(walkLength * sqrtf(0.5f), walkLength * 0.5f, -walkLength * 0.5f);
     std::vector<float> walkAngles = InputSampler::sampleInputFalling(3 * DirectX::XM_PIDIV4, DirectX::XM_PIDIV4, 10);
     std::vector<float> rollAngles = InputSampler::sampleInputFalling(0, DirectX::XM_PIDIV2, 10);
 
+<<<<<<< HEAD
     m_enemies.back().loadWalkAnimation(
+=======
+    m_enemy.loadWalkAnimation(
+>>>>>>> origin/master
         enemyWalkTrajectory.sampleByAngle(walkAngles),
         rollAngles,
         0.3f
     );
 
+<<<<<<< HEAD
     m_frog.setDefaultScaling(m_fullscreenRect);
 
     walkLength = m_frog.getTextureSize().x;
@@ -473,12 +524,17 @@ void Game::CreateWindowSizeDependentResources()
         0.3f
     );
 
+=======
+>>>>>>> origin/master
     //    Attack
     m_attackFire.setDefaultScaling(m_fullscreenRect);
     m_attackFlame.setDefaultScaling(m_fullscreenRect);
     m_attackStone.setDefaultScaling(m_fullscreenRect);
     m_attackTransform.setDefaultScaling(m_fullscreenRect);
+<<<<<<< HEAD
     m_attackPetrification.setDefaultScaling(m_fullscreenRect);
+=======
+>>>>>>> origin/master
 
     //    Ailment
     for (auto& a : m_ailments) {
@@ -518,6 +574,7 @@ void Game::OnDeviceLost()
     m_attackFlame.reset(m_descriptorStatuses);
     m_attackStone.reset(m_descriptorStatuses);
     m_attackTransform.reset(m_descriptorStatuses);
+<<<<<<< HEAD
     m_attackPetrification.reset(m_descriptorStatuses);
     
     // Enemy
@@ -526,6 +583,11 @@ void Game::OnDeviceLost()
     }
     //m_enemy.reset(m_descriptorStatuses);
     m_frog.reset(m_descriptorStatuses);
+=======
+    
+    // Enemy
+    m_enemy.reset(m_descriptorStatuses);
+>>>>>>> origin/master
 
     // Ailment
     for (auto& a : m_ailments) {

@@ -58,11 +58,14 @@ void Attack::setDefaultScaling(RECT fullscreenRect)
 	size.y = originalSize.y * defaultScaling / (fullscreenRect.bottom);
 }
 
+<<<<<<< HEAD
 void Attack::setIsOn(bool _isOn)
 {
 	isOn = _isOn;
 }
 
+=======
+>>>>>>> origin/master
 bool Attack::getIsOn()
 {
 	return isOn;

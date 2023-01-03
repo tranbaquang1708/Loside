@@ -9,6 +9,11 @@ void AttackInterfaceFire::loadAttack(AttackFire* _attackFire, AttackFlame* _atta
 
 void AttackInterfaceFire::attack(Enemy* enemy)
 {
+<<<<<<< HEAD
+=======
+	if (getIsCoolingDown()) return;
+
+>>>>>>> origin/master
 	setCoolDownPassedTime(0.f);
 	setIsCoolingDown(true);
 
@@ -30,10 +35,13 @@ void AttackInterfaceFire::attack(Enemy* enemy)
 		enemy->getAttacked(attackFire->getAnimationTime() + 0.1f);
 		enemy->setAilment(attackFire->getAilment());
 	}
+<<<<<<< HEAD
 }
 
 void AttackInterfaceFire::cancelAllAttacks()
 {
 	attackFire->setIsOn(false);
 	attackFlame->setIsOn(false);
+=======
+>>>>>>> origin/master
 }

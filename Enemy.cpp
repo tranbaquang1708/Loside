@@ -18,7 +18,10 @@ void Enemy::loadTexture(const wchar_t* texturePath, ID3D12Device* device, Direct
 	rotation = 0.f;
 	originalRotation = 0.f;
 	color = DirectX::Colors::White;
+<<<<<<< HEAD
 	isPetrified = false;
+=======
+>>>>>>> origin/master
 
 	currentAttackedState = None;
 }
@@ -82,6 +85,7 @@ void Enemy::setWalkState()
 	}
 }
 
+<<<<<<< HEAD
 void Enemy::setTransformState(unsigned short state)
 {
 	currentTransformState = state;
@@ -92,6 +96,8 @@ void Enemy::setVisibilityState(unsigned short state)
 	currentVisibilityState = state;
 }
 
+=======
+>>>>>>> origin/master
 DirectX::XMFLOAT2 Enemy::getPosition()
 {
 	return position;
@@ -102,6 +108,7 @@ DirectX::XMFLOAT2 Enemy::getTextureSize()
 	return size;
 }
 
+<<<<<<< HEAD
 float Enemy::getProtagonistBottomRightX()
 {
 	return protagonistBottomRightX;
@@ -112,11 +119,14 @@ unsigned short Enemy::getState()
 	return currentState;
 }
 
+=======
+>>>>>>> origin/master
 unsigned short Enemy::getAilment()
 {
 	return ailment;
 }
 
+<<<<<<< HEAD
 unsigned short Enemy::getTransformState()
 {
 	return currentTransformState;
@@ -168,15 +178,30 @@ void Enemy::update(float elapsedTime, float arg_protagonistBottomRightX)
 	if (isPetrified) {
 		playPetrifedAnimation(elapsedTime);
 		priority = 3;
+=======
+void Enemy::update(float elapsedTime, float arg_protagonistBottomRightX)
+{
+	if (currentAttackedState == HitStun) {
+		attackedAnimationPlayedTime += elapsedTime;
+		if (attackedAnimationPlayedTime > stunTime) {
+			currentAttackedState = None;
+		}
+		return;
+>>>>>>> origin/master
 	}
 
 	if (currentAttackedState == PushedBackRight || currentAttackedState == PushedBackLeft) {
 		playPushedBackAnimation(elapsedTime);
+<<<<<<< HEAD
 		priority = 3;
 	}
 
 	if (priority == 3)
 		return;
+=======
+		return;
+	}
+>>>>>>> origin/master
 
 	protagonistBottomRightX = arg_protagonistBottomRightX;
 
@@ -195,9 +220,12 @@ void Enemy::draw(std::unique_ptr<DirectX::SpriteBatch>& m_spriteBatch,
 	std::unique_ptr<DirectX::DescriptorHeap>& m_resourceDescriptors,
 	RECT fullscreenRect)
 {
+<<<<<<< HEAD
 	if (currentVisibilityState == VisibilityState::NonExistence)
 		return;
 
+=======
+>>>>>>> origin/master
 	DirectX::XMUINT2 textureSize = DirectX::GetTextureSize(this->texture.Get());
 
 	m_spriteBatch->Draw(m_resourceDescriptors->GetGpuHandle(descriptorMap),
@@ -258,6 +286,7 @@ void Enemy::playWalkAnimation(float elapsedTime)
 	}
 }
 
+<<<<<<< HEAD
 void Enemy::playStraightFallAnimation(float elapsedTime)
 {
 	animationPlayedTime += elapsedTime;
@@ -275,6 +304,8 @@ void Enemy::playStraightFallAnimation(float elapsedTime)
 	}
 }
 
+=======
+>>>>>>> origin/master
 void Enemy::playPushedBackAnimation(float elapsedTime)
 {
 	attackedAnimationPlayedTime += elapsedTime;
@@ -292,6 +323,7 @@ void Enemy::playPushedBackAnimation(float elapsedTime)
 	}
 
 	if (currentPositionIdx == pushedBackTrajectory.size() - 1) {
+<<<<<<< HEAD
 		if (currentAttackedState == PushedBackRight) {
 			originalPosition.x += pushedBackTrajectory[currentPositionIdx].x;
 		}
@@ -299,10 +331,13 @@ void Enemy::playPushedBackAnimation(float elapsedTime)
 			originalPosition.x -= pushedBackTrajectory[currentPositionIdx].x;
 		}
 		currentAttackedState = None;
+=======
+>>>>>>> origin/master
 		getAttacked(0.1f);
 	}
 }
 
+<<<<<<< HEAD
 void Enemy::playPetrifedAnimation(float elapsedTime)
 {
 	petrifiedPassedTime += elapsedTime;
@@ -337,11 +372,19 @@ void Enemy::getAttacked(float _stunTime)
 	hitStunTime = _stunTime;
 	isHitStun = true;
 	hitStunPassedTime = 0;
+=======
+void Enemy::getAttacked(float _stunTime)
+{
+	stunTime = _stunTime;
+	currentAttackedState = HitStun;
+	attackedAnimationPlayedTime = 0;
+>>>>>>> origin/master
 }
 
 void Enemy::getPushedBack(float displacement, float duration)
 {
 	// MYTODO: Find better way to implement push back direction
+<<<<<<< HEAD
 	// If currentAttackedState is not None then update original position (not implemented)
 
 	// Is enemy is petrified -> half the displacement
@@ -350,6 +393,9 @@ void Enemy::getPushedBack(float displacement, float duration)
 		displacement *= 0.5f;
 
 	isHitStun = false; // If enemy is being hit stunned -> cancel hit stun
+=======
+	originalPosition.x += displacement;
+>>>>>>> origin/master
 	pushedBackTime = duration;
 	attackedOriginalPosition = position;
 	attackedAnimationPlayedTime = 0;
@@ -368,6 +414,7 @@ void Enemy::getPushedBack(float displacement, float duration)
 		[this](float const& x) { return DirectX::XMFLOAT2(x, position.y); });
 }
 
+<<<<<<< HEAD
 void Enemy::getPetrified(float duration)
 {
 	originalPosition.x += position.x - attackedOriginalPosition.x;
@@ -378,6 +425,8 @@ void Enemy::getPetrified(float duration)
 	isPetrified = true;
 }
 
+=======
+>>>>>>> origin/master
 int Enemy::pushToHeap(std::vector<bool>& m_descriptorStatuses, int startIdx)
 {
 	for (int i = startIdx; i < m_descriptorStatuses.size(); ++i) {

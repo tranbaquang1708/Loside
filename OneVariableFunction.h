@@ -8,6 +8,11 @@
 #include <vector>
 #include <DirectXMath.h>
 
+<<<<<<< HEAD
+=======
+//#include <sstream>
+
+>>>>>>> origin/master
 class OneVariableFunction
 {
 public:

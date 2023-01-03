@@ -86,9 +86,12 @@
     <Filter Include="Assets\Ailments\Stone">
       <UniqueIdentifier>{6c1e8100-d950-4640-85f6-205614154a55}</UniqueIdentifier>
     </Filter>
+<<<<<<< HEAD
     <Filter Include="Assets\Attacks\Petrification">
       <UniqueIdentifier>{3d1f93a3-18af-428c-a210-0f1c20785c67}</UniqueIdentifier>
     </Filter>
+=======
+>>>>>>> origin/master
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -157,12 +160,15 @@
     <ClInclude Include="AttackInterfaceTransform.h">
       <Filter>Common\AttackInterfaces</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="Frog.h">
       <Filter>Common\Texture2D</Filter>
     </ClInclude>
     <ClInclude Include="AttackPetrification.h">
       <Filter>Common\Attack</Filter>
     </ClInclude>
+=======
+>>>>>>> origin/master
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -219,12 +225,15 @@
     <ClCompile Include="AttackInterfaceTransform.cpp">
       <Filter>Common\AttackInterfaces</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="Frog.cpp">
       <Filter>Common\Texture2D</Filter>
     </ClCompile>
     <ClCompile Include="AttackPetrification.cpp">
       <Filter>Common\Attack</Filter>
     </ClCompile>
+=======
+>>>>>>> origin/master
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -380,6 +389,7 @@
     <Image Include="..\Assets\Ailments\Stone\stone.dds">
       <Filter>Assets\Ailments\Stone</Filter>
     </Image>
+<<<<<<< HEAD
     <Image Include="..\Assets\Enemies\frog.dds">
       <Filter>Assets\Enemy</Filter>
     </Image>
@@ -458,6 +468,8 @@
     <Image Include="..\Assets\Attacks\Petrification\24.dds">
       <Filter>Assets\Attacks\Petrification</Filter>
     </Image>
+=======
+>>>>>>> origin/master
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest">

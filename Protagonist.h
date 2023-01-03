@@ -35,8 +35,11 @@ public:
 	void walk(float elapsedTime);
 	void cancelWalk();
 
+<<<<<<< HEAD
 	void cancelAllAttacks();
 
+=======
+>>>>>>> origin/master
 	void handleInput(DirectX::Keyboard::State keyboardInput, DirectX::Keyboard::KeyboardStateTracker& keyboardTracker);
 
 private:

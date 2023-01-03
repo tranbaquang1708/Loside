@@ -12,8 +12,16 @@
 #include "Texture2D.h"
 #include "SkillUI.h"
 #include "Protagonist.h"
+<<<<<<< HEAD
 #include "Enemy.h"
 #include "Frog.h"
+=======
+#include "AttackFire.h"
+#include "AttackFlame.h"
+#include "AttackStone.h"
+#include "AttackInterfaceFire.h"
+#include "Enemy.h"
+>>>>>>> origin/master
 
 
 // A basic game implementation that creates a D3D12 device and
@@ -108,11 +116,17 @@ private:
     AttackFlame                                 m_attackFlame;
     AttackStone                                 m_attackStone;
     AttackTransform                             m_attackTransform;
+<<<<<<< HEAD
     AttackPetrification                         m_attackPetrification;
 
     //    Enemy
     std::list<Enemy>                            m_enemies;
     Enemy                                       m_frog;
+=======
+
+    //    Enemy
+    Enemy                                       m_enemy;
+>>>>>>> origin/master
 
     //    Ailments
     std::map<unsigned short, Ailment>          m_ailments;
